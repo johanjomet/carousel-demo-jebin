@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consultio | Consulting services</title>
+<meta name="description" content="Consultio is a consulting company offering business planning, program management, strategy, chart management, SEO optimization and investment ideas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mist:#E9EEF4;
+  --paper:#F7F9FC;
+  --ink:#0A1A2F;
+  --muted:#4A5A70;
+  --blue:#2F3DF2;
+  --coral:#FF5B45;
+  --sun:#FFC93C;
+  --sky:#C4D3FF;
+  --teal:#0E5B63;
+  --line:#CBD5E1;
+  --focus:#2F3DF2;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Figtree","Segoe UI",system-ui,-apple-system,sans-serif;
+  --gutter:max(24px,calc((100% - 1240px) / 2));
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:var(--mist);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--display);margin:0;letter-spacing:-.025em;line-height:1.05}
+p{margin:0}
+a{color:inherit}
+img,svg{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{width:min(1240px,100% - 48px);margin-inline:auto}
+.skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:#fff;padding:.6rem 1rem;border-radius:8px;z-index:100}
+.skip:focus{top:12px}
+
+/* ---------- top bar + nav ---------- */
+.topbar{background:var(--ink);color:#DCE5F2;font-size:.9rem}
+.topbar .wrap{display:flex;gap:2rem;justify-content:space-between;padding-block:.55rem;flex-wrap:wrap}
+.topbar a{text-decoration:none}
+.topbar a:hover{text-decoration:underline}
+.topbar b{font-weight:600;color:#fff}
+.nav{position:sticky;top:0;z-index:50;background:rgba(233,238,244,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:76px;gap:1.5rem}
+.brand{display:flex;align-items:center;gap:.7rem;text-decoration:none;font-family:var(--display);font-weight:800;font-size:1.55rem;letter-spacing:-.04em}
+.menu{display:flex;gap:2.2rem;list-style:none;margin:0;padding:0}
+.menu a{text-decoration:none;font-weight:500;padding:.4rem 0;border-bottom:2px solid transparent}
+.menu a:hover{border-color:var(--blue)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;font-weight:600;text-decoration:none;border-radius:999px;padding:.85rem 1.5rem;background:var(--ink);color:#fff;transition:background .2s,transform .2s}
+.btn:hover{background:var(--blue)}
+.btn.alt{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.alt:hover{background:var(--ink);color:#fff}
+.burger{display:none;width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--ink);place-items:center}
+.burger span,.burger span::before{display:block;width:18px;height:2px;background:var(--ink);position:relative;content:""}
+.burger span::before{position:absolute;top:-6px;left:0;box-shadow:0 12px 0 var(--ink)}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(40px,6vw,84px) 0 clamp(28px,4vw,48px)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,auto) minmax(350px,1fr);gap:clamp(24px,3vw,48px);align-items:end}
+.hero h1{font-weight:800;font-size:clamp(2.5rem,5.6vw,5.4rem);letter-spacing:-.045em;line-height:.96}
+.hero h1 .ln{white-space:nowrap}
+.ln{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.ln>span{display:block;animation:rise 1s var(--ease) both;animation-delay:calc(var(--i) * .1s)}
+.hero-side p{font-size:1.2rem;color:var(--muted);max-width:34ch;margin-bottom:1.6rem}
+.hero-side .cta{display:flex;gap:.8rem;flex-wrap:wrap}
+@keyframes rise{from{transform:translateY(105%)}}
+@keyframes enter{from{opacity:0;transform:translateX(70px)}}
+
+/* ---------- main carousel ---------- */
+.carousel{padding-bottom:clamp(48px,7vw,96px)}
+.stage{overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage:active{cursor:grabbing}
+.track{--cw:198px;--aw:620px;--gap:14px;--ch:540px;display:flex;gap:var(--gap);padding-inline:var(--gutter);transition:transform .8s var(--ease);will-change:transform;position:relative}
+.card{position:relative;flex:0 0 var(--cw);height:var(--ch);border-radius:30px;overflow:hidden;background:var(--bg);color:var(--fg);transition:flex-basis .8s var(--ease);cursor:pointer;animation:enter .9s var(--ease) both;animation-delay:calc(.45s + var(--i) * .08s)}
+.card.is-active{flex-basis:var(--aw);cursor:default}
+.art{position:absolute;top:14px;left:0;width:310px;height:310px;transform:translateX(calc((var(--cw) - 100%) / 2));transition:transform .8s var(--ease)}
+.card.is-active .art{transform:translateX(calc(var(--aw) - 100% - 18px))}
+.art svg{width:100%;height:100%}
+.vtitle{position:absolute;left:20px;bottom:24px;writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:-.02em;white-space:nowrap;transition:opacity .3s}
+.card.is-active .vtitle{opacity:0}
+.toggle{position:absolute;right:16px;bottom:16px;width:48px;height:48px;border-radius:50%;box-shadow:inset 0 0 0 1.5px currentColor;display:grid;place-items:center;transition:transform .3s var(--ease),background .2s,color .2s}
+.toggle:hover{background:var(--fg);color:var(--bg)}
+.card.is-active .toggle{display:none}
+.body{position:absolute;left:32px;right:32px;bottom:32px;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+.card.is-active .body{opacity:1;visibility:visible;transition:opacity .5s .4s,visibility 0s .4s}
+.body h3{font-size:clamp(2rem,3.4vw,2.9rem);font-weight:800;letter-spacing:-.04em;margin-bottom:.8rem}
+.body p{max-width:36ch;line-height:1.55;margin-bottom:1.5rem}
+.more{display:inline-flex;align-items:center;gap:.5rem;font-weight:600;text-decoration:none;padding:.7rem 1.3rem;border-radius:999px;box-shadow:inset 0 0 0 1.5px currentColor;transition:background .2s,color .2s}
+.more:hover{background:var(--fg);color:var(--bg)}
+.controls{display:flex;align-items:flex-end;gap:2rem;margin-top:28px;padding-inline:var(--gutter)}
+.segs{display:flex;flex:1;gap:12px}
+.seg{position:relative;flex:1;padding-top:16px;text-align:left;font-weight:500;color:var(--muted);transition:color .2s}
+.seg::before,.seg::after{content:"";position:absolute;top:0;left:0;height:4px;border-radius:4px}
+.seg::before{right:0;background:var(--line)}
+.seg::after{width:0;background:var(--ink)}
+.seg.is-active{color:var(--ink);font-weight:600}
+.seg.is-active::after{width:100%}
+.autoplay .seg.is-active::after{animation:fill 6.5s linear forwards}
+.paused .seg.is-active::after{animation-play-state:paused}
+@keyframes fill{from{width:0}}
+.arrows{display:flex;gap:.6rem}
+.circ{width:56px;height:56px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--ink);display:grid;place-items:center;transition:background .2s,color .2s}
+.circ:hover:not(:disabled){background:var(--ink);color:#fff}
+.circ:disabled{opacity:.35;cursor:default}
+
+/* ---------- section heading ---------- */
+.head{display:flex;justify-content:space-between;align-items:end;gap:2rem;margin-bottom:2.4rem;flex-wrap:wrap}
+.head h2{font-size:clamp(2.1rem,4.6vw,3.8rem);font-weight:800;letter-spacing:-.04em;max-width:16ch}
+.head p{color:var(--muted);max-width:38ch}
+
+/* ---------- icon card rail ---------- */
+.glance{background:var(--paper);padding:clamp(56px,8vw,110px) 0}
+.rail{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-inline:var(--gutter);scroll-padding-inline:var(--gutter);scrollbar-width:none;padding-bottom:6px;cursor:grab}
+.rail::-webkit-scrollbar{display:none}
+.rail.drag{scroll-snap-type:none;cursor:grabbing}
+.icard{flex:0 0 min(340px,82vw);scroll-snap-align:start;background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px;display:flex;flex-direction:column;gap:1rem;min-height:360px}
+.tile{width:68px;height:68px;border-radius:20px;display:grid;place-items:center;background:var(--bg);color:var(--fg)}
+.tile svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.icard h3{font-size:1.65rem;font-weight:700;margin-top:.6rem}
+.icard p{color:var(--muted);flex:1}
+.icard .more{align-self:flex-start;box-shadow:inset 0 0 0 1.5px var(--ink);color:var(--ink)}
+.icard .more:hover{background:var(--ink);color:#fff}
+.railbar{display:flex;align-items:center;gap:2rem;margin-top:32px;padding-inline:var(--gutter)}
+.scrolltrack{position:relative;flex:1;height:4px;border-radius:4px;background:var(--line)}
+.scrollthumb{position:absolute;top:0;bottom:0;left:0;width:30%;border-radius:4px;background:var(--ink)}
+
+/* ---------- investment ---------- */
+.invest{background:var(--ink);color:#fff;padding:clamp(56px,8vw,110px) 0;overflow:hidden}
+.invest .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,6vw,90px);align-items:center}
+.invest h2{font-size:clamp(2.4rem,5.4vw,4.8rem);font-weight:800;letter-spacing:-.045em;margin-bottom:1.2rem}
+.invest p{font-size:1.25rem;color:#C5D1E3;max-width:38ch;margin-bottom:2rem}
+.invest .btn{background:var(--sun);color:var(--ink)}
+.invest .btn:hover{background:#fff}
+.invest .coin{width:min(420px,100%);margin-inline:auto;background:var(--teal);border-radius:40px;padding:20px}
+
+/* ---------- contact + newsletter ---------- */
+.contact{padding:clamp(56px,8vw,110px) 0}
+.contact .wrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,6vw,96px)}
+.contact h2{font-size:clamp(2.1rem,4.6vw,3.8rem);font-weight:800;letter-spacing:-.04em;margin-bottom:2rem}
+.facts{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:1rem;padding:1.15rem 0;border-bottom:1px solid var(--line)}
+.facts span{color:var(--muted)}
+.facts a{text-decoration:none;font-weight:600}
+.facts a:hover{text-decoration:underline}
+.news{background:var(--blue);color:#fff;border-radius:32px;padding:clamp(28px,4vw,52px);align-self:start}
+.news h3{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:800;letter-spacing:-.035em;margin-bottom:.8rem}
+.news p{color:#E2E8FF;margin-bottom:1.6rem;max-width:42ch}
+.field{display:flex;gap:.6rem;background:#fff;border-radius:999px;padding:6px;flex-wrap:wrap}
+.field input{flex:1 1 180px;min-width:0;border:0;background:transparent;font:inherit;color:var(--ink);padding:.7rem 1.1rem;border-radius:999px}
+.field input:focus-visible{outline:3px solid var(--blue);outline-offset:0}
+.field input::placeholder{color:#6B7A90}
+.field .btn{background:var(--ink)}
+.field .btn:hover{background:var(--coral);color:var(--ink)}
+.msg{min-height:1.6em;margin-top:.9rem;font-weight:500}
+.msg.err{color:#FFE1DC}
+
+/* ---------- footer ---------- */
+footer{background:#06111F;color:#C5D1E3;padding:clamp(48px,6vw,80px) 0 28px}
+footer :focus-visible{outline-color:var(--sun)}
+.fgrid{display:grid;grid-template-columns:1.3fr .8fr 1.2fr;gap:clamp(28px,5vw,72px)}
+footer h4{font-size:1.25rem;color:#fff;margin-bottom:1.1rem;letter-spacing:-.02em}
+footer .brand{color:#fff;margin-bottom:1.2rem}
+footer address{font-style:normal;display:grid;gap:.5rem}
+footer ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:.55rem 1.5rem}
+footer a{text-decoration:none}
+footer a:hover{text-decoration:underline;color:#fff}
+footer .field{background:#0E2038}
+footer .field input{color:#fff}
+footer .field input::placeholder{color:#8FA0B8}
+footer .field .btn{background:var(--sun);color:var(--ink)}
+footer .msg.err{color:#FFB3A8}
+.copy{margin-top:48px;padding-top:22px;border-top:1px solid #1B2E47;font-size:.92rem;color:#8FA0B8}
+
+/* ---------- responsive ---------- */
+@media (max-width:1000px){
+  .menu{display:none}
+  .burger{display:grid}
+  .nav .btn{display:none}
+  .nav.open .menu{display:grid;position:absolute;top:100%;left:0;right:0;background:var(--paper);padding:1rem 24px 1.4rem;gap:.4rem;border-bottom:1px solid var(--line)}
+  .nav.open .menu a{display:block;padding:.7rem 0;font-size:1.15rem}
+  .hero .wrap,.invest .wrap,.contact .wrap,.fgrid{grid-template-columns:1fr}
+  .hero h1 .ln{white-space:normal}
+  .topbar .wrap{gap:.3rem 1.5rem}
+}
+@media (max-width:860px){
+  .stage{overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);scrollbar-width:none;cursor:auto}
+  .stage::-webkit-scrollbar{display:none}
+  .track{transform:none!important;--gap:12px}
+  .card,.card.is-active{flex:0 0 min(84vw,380px);height:auto;min-height:480px;display:flex;flex-direction:column;scroll-snap-align:start;animation-delay:calc(.2s + var(--i) * .05s)}
+  .art,.card.is-active .art{position:relative;top:auto;width:100%;height:230px;transform:none;margin-top:10px}
+  .vtitle,.toggle{display:none!important}
+  .body,.card.is-active .body{position:static;opacity:1;visibility:visible;padding:8px 26px 28px;transition:none}
+  .controls{margin-top:22px;gap:1rem}
+  .seg .lbl{display:none}
+  .seg{padding-top:14px;min-height:34px}
+  .circ{width:48px;height:48px}
+  .facts li{grid-template-columns:1fr;gap:.2rem}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#services">Skip to services</a>
+
+<div class="topbar">
+  <div class="wrap">
+    <span><b>Call us:</b> <a href="tel:+210123451">(210)-123-451</a> (Sat - Thursday)</span>
+    <span><b>Mail us for help:</b> <a href="mailto:info@consultio.com">info@consultio.com</a></span>
+    <span>380 St Kilda Road, Melbourne, Australia</span>
+  </div>
+</div>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Consultio home">
+      <svg width="36" height="36" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="10" fill="#2F3DF2"/><path d="M23 12.5A8 8 0 1 0 23 21.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="24" cy="17" r="2.5" fill="#FF5B45"/></svg>
+      Consultio
+    </a>
+    <nav aria-label="Main">
+      <ul class="menu" id="menu">
+        <li><a href="#top">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#glance">All services</a></li>
+        <li><a href="#investment">Investment Idea</a></li>
+        <li><a href="#contact">Contact us</a></li>
+      </ul>
+    </nav>
+    <a class="btn" href="#newsletter">Subscribe now</a>
+    <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><span></span></button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <h1>
+        <span class="ln" style="--i:0"><span>Welcome to our</span></span>
+        <span class="ln" style="--i:1"><span>consulting company</span></span>
+        <span class="ln" style="--i:2"><span>Consultio!</span></span>
+      </h1>
+      <div class="hero-side">
+        <p>We understand the importance of approaching each work integrally and believe in the power of simple.</p>
+        <div class="cta">
+          <a class="btn" href="#services">Explore services</a>
+          <a class="btn alt" href="#contact">Contact us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="carousel" id="services" aria-labelledby="svc-h">
+    <h2 class="sr" id="svc-h">Our services</h2>
+    <div class="stage" id="stage" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Services. Use the left and right arrow keys to change slide.">
+      <div class="track" id="track"></div>
+    </div>
+    <div class="controls">
+      <div class="segs" id="segs"></div>
+      <div class="arrows">
+        <button class="circ" id="prev" type="button" aria-label="Previous service"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="circ" id="next" type="button" aria-label="Next service"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="glance" id="glance" aria-labelledby="glance-h">
+    <div class="wrap head">
+      <h2 id="glance-h">Everything we offer, at a glance</h2>
+      <p>Drag, swipe or use the buttons to browse each service and open the one you need.</p>
+    </div>
+    <div class="rail" id="rail" tabindex="0" role="region" aria-label="Service cards. Scroll sideways to see more."></div>
+    <div class="railbar">
+      <div class="scrolltrack" aria-hidden="true"><div class="scrollthumb" id="thumb"></div></div>
+      <div class="arrows">
+        <button class="circ" id="rprev" type="button" aria-label="Scroll cards left"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="circ" id="rnext" type="button" aria-label="Scroll cards right"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="invest" id="investment" aria-labelledby="inv-h">
+    <div class="wrap">
+      <div>
+        <h2 id="inv-h">Investment Idea</h2>
+        <p>Our Investment Idea services provide clients with tailored, data-driven strategies and insights.</p>
+        <a class="btn" href="#contact">Read more</a>
+      </div>
+      <div class="coin" id="coinArt" role="img" aria-label="Stack of gold coins with a spark above"></div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <div class="wrap">
+      <div>
+        <h2 id="contact-h">Contact us</h2>
+        <ul class="facts">
+          <li><span>Call us</span><a href="tel:+210123451">(210)-123-451</a></li>
+          <li><span>Mail us for help</span><a href="mailto:info@consultio.com">info@consultio.com</a></li>
+          <li><span>Visit us</span><a href="https://www.google.com/maps/place/380+St+Kilda+Rd,+Melbourne+VIC+3000,+Australia/" target="_blank" rel="noopener">380 St Kilda Road, Melbourne, Australia</a></li>
+          <li><span>Phone hours</span><strong>Saturday to Thursday</strong></li>
+        </ul>
+      </div>
+      <div class="news" id="newsletter">
+        <h3>Subscribe to our newsletter</h3>
+        <p>Sign up to receive latest news, updates, promotions, and special offers delivered directly to your inbox.</p>
+        <form class="nl" novalidate>
+          <div class="field">
+            <label class="sr" for="mail1">Your mail address</label>
+            <input id="mail1" type="email" name="email" placeholder="Your mail address" autocomplete="email" required>
+            <button class="btn" type="submit">Subscribe now</button>
+          </div>
+          <p class="msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a class="brand" href="#top" aria-label="Consultio home">
+          <svg width="36" height="36" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="10" fill="#2F3DF2"/><path d="M23 12.5A8 8 0 1 0 23 21.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="24" cy="17" r="2.5" fill="#FF5B45"/></svg>
+          Consultio
+        </a>
+        <address>
+          <span>30 Commercial Road<br>Fratton, Australia</span>
+          <a href="tel:+18884521505">1-888-452-1505</a>
+          <span><strong style="color:#fff;font-weight:600">Open Hours:</strong><br>Mon – Sat: 8 am – 5 pm,<br>Sunday: CLOSED</span>
+        </address>
+      </div>
+      <div>
+        <h4>Links</h4>
+        <ul>
+          <li><a href="#top">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#glance">All services</a></li>
+          <li><a href="#investment">Investment</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#newsletter">Newsletter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Newsletter</h4>
+        <p style="margin-bottom:1rem">Send us a newsletter to get update</p>
+        <form class="nl" novalidate>
+          <div class="field">
+            <label class="sr" for="mail2">Your mail address</label>
+            <input id="mail2" type="email" name="email" placeholder="Your mail address" autocomplete="email" required>
+            <button class="btn" type="submit">Subscribe now</button>
+          </div>
+          <p class="msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+    <p class="copy">© 2026 Consultio. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ---------- content ---------- */
+  var coinArt = '<svg viewBox="0 0 300 300" aria-hidden="true">'
+    + [220,186,152,118].map(function(y){
+        return '<rect x="70" y="'+y+'" width="160" height="22" fill="#E3A400"/>'
+          + '<ellipse cx="150" cy="'+(y+22)+'" rx="80" ry="24" fill="#E3A400"/>'
+          + '<ellipse cx="150" cy="'+y+'" rx="80" ry="24" fill="#FFC93C"/>'
+          + '<ellipse cx="150" cy="'+y+'" rx="56" ry="15" fill="none" stroke="#E3A400" stroke-width="4"/>';
+      }).join('')
+    + '<path d="M150 22l9 26 26 9-26 9-9 26-9-26-26-9 26-9z" fill="#fff"/>'
+    + '<path d="M70 70l-24-14M230 70l24-14M44 110h-22M256 110h22" stroke="#FFC93C" stroke-width="6" stroke-linecap="round"/></svg>';
+
+  var S = [
+    { title:'Business Planning', bg:'#2F3DF2', fg:'#fff',
+      text:'We develop the relationships that underpin the next phase in your organisation’s growth. We do this by discerning the people.',
+      icon:'<path d="M5 21V4"/><path d="M5 5h12l-2 4 2 4H5"/>',
+      art:'<svg viewBox="0 0 300 300" aria-hidden="true"><rect x="30" y="30" width="240" height="240" rx="28" fill="#fff" opacity=".12"/><path d="M30 90h240M30 150h240M30 210h240M90 30v240M150 30v240M210 30v240" stroke="#fff" opacity=".25"/><path d="M60 230C110 230 90 150 150 150S190 90 230 90" fill="none" stroke="#FFC93C" stroke-width="7" stroke-linecap="round" stroke-dasharray="1 15"/><circle cx="60" cy="230" r="13" fill="#fff"/><circle cx="150" cy="150" r="13" fill="#C4D3FF"/><path d="M230 38v62" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M230 40l38 14-38 14z" fill="#FF5B45"/></svg>' },
+    { title:'Program management', bg:'#0A1A2F', fg:'#fff',
+      text:'The development of your next business plan will be executed by a brilliant team who will indicate your grand success.',
+      icon:'<rect x="3" y="4" width="10" height="4" rx="2"/><rect x="8" y="10" width="13" height="4" rx="2"/><rect x="5" y="16" width="9" height="4" rx="2"/>',
+      art:'<svg viewBox="0 0 300 300" aria-hidden="true"><rect x="28" y="52" width="132" height="30" rx="15" fill="#FF5B45"/><rect x="92" y="102" width="154" height="30" rx="15" fill="#FFC93C"/><rect x="58" y="152" width="112" height="30" rx="15" fill="#C4D3FF"/><rect x="140" y="202" width="132" height="30" rx="15" fill="#fff"/><path d="M204 40v220" stroke="#fff" stroke-width="3" stroke-dasharray="4 9" opacity=".55"/><circle cx="204" cy="34" r="9" fill="#FF5B45"/></svg>' },
+    { title:'Strategy', bg:'#FF5B45', fg:'#0A1A2F',
+      text:'What separates our agency from all other web design agencies is the ability to offer the most user-friendly experience.',
+      icon:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l8-8M17 4h3v3"/>',
+      art:'<svg viewBox="0 0 300 300" aria-hidden="true"><circle cx="150" cy="160" r="112" fill="#fff" opacity=".35"/><circle cx="150" cy="160" r="78" fill="#fff"/><circle cx="150" cy="160" r="44" fill="#0A1A2F"/><circle cx="150" cy="160" r="14" fill="#FF5B45"/><path d="M158 152L262 48" stroke="#0A1A2F" stroke-width="9" stroke-linecap="round"/><path d="M270 40l-30 3M270 40l-3 30" stroke="#0A1A2F" stroke-width="9" stroke-linecap="round"/></svg>' },
+    { title:'Chart management', bg:'#C4D3FF', fg:'#0A1A2F',
+      text:'Graphic design is the process of visual and problem-solving using one or more of typography, photography and illustration.',
+      icon:'<path d="M4 20V4M4 20h17"/><path d="M8 16l4-5 3 3 5-7"/>',
+      art:'<svg viewBox="0 0 300 300" aria-hidden="true"><rect x="36" y="180" width="34" height="80" rx="8" fill="#2F3DF2"/><rect x="88" y="140" width="34" height="120" rx="8" fill="#2F3DF2"/><rect x="140" y="160" width="34" height="100" rx="8" fill="#2F3DF2"/><rect x="192" y="110" width="34" height="150" rx="8" fill="#2F3DF2"/><rect x="244" y="70" width="34" height="190" rx="8" fill="#0A1A2F"/><path d="M53 160L105 118l52 20 52-50 52-36" fill="none" stroke="#FF5B45" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="53" cy="160" r="9" fill="#fff" stroke="#FF5B45" stroke-width="5"/><circle cx="105" cy="118" r="9" fill="#fff" stroke="#FF5B45" stroke-width="5"/><circle cx="157" cy="138" r="9" fill="#fff" stroke="#FF5B45" stroke-width="5"/><circle cx="209" cy="88" r="9" fill="#fff" stroke="#FF5B45" stroke-width="5"/><circle cx="261" cy="52" r="9" fill="#fff" stroke="#FF5B45" stroke-width="5"/></svg>' },
+    { title:'SEO Optimization', bg:'#FFC93C', fg:'#0A1A2F',
+      text:'A blueprint for accomplishing your objectives, from thought leadership to capacity building, photography and illustration.',
+      icon:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M7.5 12l2-2 1.5 1.5 2.5-3"/>',
+      art:'<svg viewBox="0 0 300 300" aria-hidden="true"><circle cx="128" cy="128" r="76" fill="#fff" opacity=".75"/><circle cx="128" cy="128" r="76" fill="none" stroke="#0A1A2F" stroke-width="16"/><path d="M184 184L252 252" stroke="#0A1A2F" stroke-width="24" stroke-linecap="round"/><path d="M88 156l28-28 20 16 30-38" fill="none" stroke="#2F3DF2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M152 100h22v22" fill="none" stroke="#2F3DF2" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect x="196" y="30" width="78" height="38" rx="19" fill="#FF5B45"/><rect x="212" y="45" width="46" height="8" rx="4" fill="#fff"/></svg>' },
+    { title:'Investment Idea', bg:'#0E5B63', fg:'#fff',
+      text:'Our Investment Idea services provide clients with tailored, data-driven strategies and insights.',
+      icon:'<ellipse cx="12" cy="7" rx="8" ry="3"/><path d="M4 7v5c0 1.7 3.6 3 8 3s8-1.3 8-3V7"/><path d="M4 12v5c0 1.7 3.6 3 8 3s8-1.3 8-3v-5"/>',
+      art:coinArt }
+  ];
+
+  var $ = function(s,r){ return (r||document).querySelector(s); };
+  var mobileMQ = matchMedia('(max-width:860px)');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var plus = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+
+  $('#coinArt').innerHTML = coinArt;
+
+  /* ---------- main carousel ---------- */
+  var carousel = $('#services'), stage = $('#stage'), track = $('#track'), segsEl = $('#segs');
+  track.innerHTML = S.map(function(s,i){
+    return '<article class="card" style="--bg:'+s.bg+';--fg:'+s.fg+';--i:'+i+'" role="group" aria-roledescription="slide" aria-label="'+(i+1)+' of '+S.length+'">'
+      + '<div class="art">'+s.art+'</div>'
+      + '<span class="vtitle" aria-hidden="true">'+s.title+'</span>'
+      + '<button class="toggle" type="button" aria-label="Show '+s.title+'">'+plus+'</button>'
+      + '<div class="body"><h3>'+s.title+'</h3><p>'+s.text+'</p><a class="more" href="#contact">Read more<span class="sr"> about '+s.title+'</span></a></div>'
+      + '</article>';
+  }).join('');
+  segsEl.innerHTML = S.map(function(s){
+    return '<button class="seg" type="button" aria-label="Go to '+s.title+'"><span class="lbl">'+s.title+'</span></button>';
+  }).join('');
+
+  var cards = Array.prototype.slice.call(track.children);
+  var segs = Array.prototype.slice.call(segsEl.children);
+  var active = 0, auto = !reduce && !mobileMQ.matches;
+
+  function setAuto(){
+    carousel.classList.toggle('autoplay', auto && !mobileMQ.matches);
+  }
+  function stopAuto(){ auto = false; setAuto(); }
+
+  function paint(){
+    cards.forEach(function(c,i){
+      var on = i === active;
+      c.classList.toggle('is-active', on);
+      c.setAttribute('aria-current', on ? 'true' : 'false');
+    });
+    segs.forEach(function(s,i){
+      s.classList.toggle('is-active', i === active);
+      s.setAttribute('aria-current', i === active ? 'true' : 'false');
+    });
+  }
+  function position(smooth){
+    if(mobileMQ.matches){
+      track.style.transform = '';
+      var left = cards[active].offsetLeft - cards[0].offsetLeft;
+      stage.scrollTo({left:left, behavior: smooth && !reduce ? 'smooth' : 'auto'});
+      return;
+    }
+    var cs = getComputedStyle(track);
+    var cw = parseFloat(cs.getPropertyValue('--cw')), aw = parseFloat(cs.getPropertyValue('--aw')), gap = parseFloat(cs.getPropertyValue('--gap'));
+    var pad = cards[0].offsetLeft;
+    var total = pad*2 + (cards.length-1)*(cw+gap) + aw;
+    var x = active*(cw+gap);
+    x = Math.max(0, Math.min(x, total - stage.clientWidth));
+    track.style.transform = 'translateX('+(-x)+'px)';
+  }
+  function goTo(i, user){
+    if(user) stopAuto();
+    active = (i + S.length) % S.length;
+    paint(); position(true);
+  }
+
+  cards.forEach(function(c,i){
+    c.addEventListener('click', function(e){
+      if(i !== active && !mobileMQ.matches){ goTo(i, true); }
+    });
+  });
+  segs.forEach(function(s,i){ s.addEventListener('click', function(){ goTo(i, true); }); });
+  $('#prev').addEventListener('click', function(){ goTo(active-1, true); });
+  $('#next').addEventListener('click', function(){ goTo(active+1, true); });
+  stage.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight'){ e.preventDefault(); goTo(active+1, true); }
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); goTo(active-1, true); }
+  });
+
+  /* autoplay advances when the progress segment finishes */
+  segsEl.addEventListener('animationend', function(e){
+    if(e.animationName === 'fill' && auto){ goTo(active+1, false); }
+  });
+  function pause(){ carousel.classList.add('paused'); }
+  function resume(){ carousel.classList.remove('paused'); }
+  carousel.addEventListener('mouseenter', pause);
+  carousel.addEventListener('mouseleave', resume);
+  carousel.addEventListener('focusin', pause);
+  carousel.addEventListener('focusout', resume);
+  document.addEventListener('visibilitychange', function(){ document.hidden ? pause() : resume(); });
+
+  /* drag / swipe on desktop widths */
+  var startX = null, dragged = false;
+  stage.addEventListener('pointerdown', function(e){
+    if(mobileMQ.matches || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    startX = e.clientX; dragged = false;
+  });
+  window.addEventListener('pointerup', function(e){
+    if(startX === null) return;
+    var dx = e.clientX - startX; startX = null;
+    if(Math.abs(dx) > 60){
+      dragged = true;
+      goTo(active + (dx < 0 ? 1 : -1), true);
+      setTimeout(function(){ dragged = false; }, 80);
+    }
+  });
+  stage.addEventListener('click', function(e){
+    if(dragged){ e.preventDefault(); e.stopPropagation(); }
+  }, true);
+
+  /* mobile: native scrolling drives the active slide */
+  stage.addEventListener('scroll', function(){
+    if(!mobileMQ.matches) return;
+    var step = cards[1].offsetLeft - cards[0].offsetLeft;
+    var idx = Math.max(0, Math.min(S.length-1, Math.round(stage.scrollLeft / step)));
+    if(idx !== active){ active = idx; paint(); }
+  }, {passive:true});
+
+  var resizeT;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeT);
+    resizeT = setTimeout(function(){ position(false); }, 100);
+  });
+  mobileMQ.addEventListener('change', function(){ setAuto(); position(false); });
+
+  paint(); setAuto();
+  requestAnimationFrame(function(){ position(false); });
+  window.addEventListener('load', function(){ position(false); });
+
+  /* ---------- icon card rail ---------- */
+  var rail = $('#rail'), thumb = $('#thumb'), rprev = $('#rprev'), rnext = $('#rnext');
+  rail.innerHTML = S.map(function(s){
+    return '<article class="icard">'
+      + '<div class="tile" style="--bg:'+s.bg+';--fg:'+s.fg+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+s.icon+'</svg></div>'
+      + '<h3>'+s.title+'</h3><p>'+s.text+'</p>'
+      + '<a class="more" href="#contact">Read more<span class="sr"> about '+s.title+'</span></a></article>';
+  }).join('');
+
+  function updateRail(){
+    var max = rail.scrollWidth - rail.clientWidth;
+    rprev.disabled = rail.scrollLeft <= 2;
+    rnext.disabled = rail.scrollLeft >= max - 2;
+    thumb.style.width = Math.min(100, rail.clientWidth / rail.scrollWidth * 100) + '%';
+    thumb.style.left = (rail.scrollLeft / rail.scrollWidth * 100) + '%';
+  }
+  function railStep(dir){
+    var c = rail.querySelector('.icard');
+    rail.scrollBy({left: dir * (c.offsetWidth + 16), behavior: reduce ? 'auto' : 'smooth'});
+  }
+  rprev.addEventListener('click', function(){ railStep(-1); });
+  rnext.addEventListener('click', function(){ railStep(1); });
+  rail.addEventListener('scroll', updateRail, {passive:true});
+  rail.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight'){ e.preventDefault(); railStep(1); }
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); railStep(-1); }
+  });
+  window.addEventListener('resize', updateRail);
+
+  var rx = null, rl = 0, moved = false;
+  rail.addEventListener('pointerdown', function(e){
+    if(e.pointerType !== 'mouse' || e.button !== 0) return;
+    rx = e.clientX; rl = rail.scrollLeft; moved = false;
+  });
+  window.addEventListener('pointermove', function(e){
+    if(rx === null) return;
+    var dx = e.clientX - rx;
+    if(Math.abs(dx) > 4){ moved = true; rail.classList.add('drag'); }
+    if(moved) rail.scrollLeft = rl - dx;
+  });
+  window.addEventListener('pointerup', function(){
+    if(rx === null) return;
+    rx = null; rail.classList.remove('drag');
+    setTimeout(function(){ moved = false; }, 50);
+  });
+  rail.addEventListener('click', function(e){
+    if(moved){ e.preventDefault(); e.stopPropagation(); }
+  }, true);
+  updateRail();
+
+  /* ---------- nav ---------- */
+  var nav = $('#nav'), burger = $('#burger');
+  burger.addEventListener('click', function(){
+    var open = nav.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open);
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+  nav.addEventListener('click', function(e){
+    if(e.target.closest('.menu a')){
+      nav.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', 'Open menu');
+    }
+  });
+
+  /* ---------- newsletter forms ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('form.nl'), function(f){
+    var input = f.querySelector('input'), msg = f.querySelector('.msg');
+    f.addEventListener('submit', function(e){
+      e.preventDefault();
+      var v = input.value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){
+        msg.classList.add('err');
+        msg.textContent = 'Enter a valid email address, like name@example.com.';
+        input.setAttribute('aria-invalid', 'true');
+        input.focus();
+        return;
+      }
+      msg.classList.remove('err');
+      input.removeAttribute('aria-invalid');
+      msg.textContent = 'Subscribed. We will send updates to ' + v + '.';
+      f.reset();
+    });
+  });
+})();
+</script>
+</body>
+</html>
