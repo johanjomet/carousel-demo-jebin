@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Consultio® — Capabilities in Motion | Legendary Service Carousel</title>
+<meta name="description" content="A legendary service carousel concept for Consultio. Business Planning, Program Management, Strategy, Investment Ideas, SEO and Research — in motion." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+  :root{
+    --bone:#EFE9DB;
+    --bone-2:#E6DFCE;
+    --ink:#141310;
+    --ink-2:#1D1C17;
+    --flame:#FF4D00;
+    --line:rgba(20,19,16,.16);
+  }
+  html{background:var(--bone);}
+  body{ font-family:'Space Grotesk',system-ui,sans-serif; background:var(--bone); color:var(--ink); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+  .font-display{ font-family:'Syne',sans-serif; letter-spacing:-.02em; }
+  .font-serifit{ font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; letter-spacing:-.01em; }
+  ::selection{ background:var(--flame); color:var(--bone); }
+  @media (pointer:fine){
+    body, a, button, input, textarea{ cursor:none; }
+  }
+
+  /* paper grain */
+  .grain:after{
+    content:""; position:fixed; inset:0; z-index:90; pointer-events:none; opacity:.07; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .blueprint{
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:72px 72px;
+  }
+  .blueprint-dark{
+    background-image:linear-gradient(rgba(239,233,219,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(239,233,219,.07) 1px,transparent 1px);
+    background-size:72px 72px;
+  }
+
+  /* custom cursor */
+  #cursorDot,#cursorRing,#cursorLabel{ position:fixed; top:0; left:0; z-index:200; pointer-events:none; }
+  #cursorDot{ width:8px; height:8px; border-radius:99px; background:var(--flame); transform:translate(-50%,-50%); }
+  #cursorRing{ width:38px; height:38px; border-radius:99px; border:1.5px solid var(--ink); transform:translate(-50%,-50%); transition:width .3s,height .3s,background .3s,border .3s; display:grid; place-items:center; }
+  #cursorLabel{ transform:translate(-50%,-50%); font-size:10px; font-weight:700; letter-spacing:.18em; color:var(--bone); opacity:0; transition:opacity .25s; }
+  #cursorRing.is-active{ width:92px; height:92px; background:var(--ink); border-color:var(--ink); }
+  #cursorRing.is-active + #cursorLabel{ opacity:1; }
+  #cursorRing.is-flame{ background:var(--flame); border-color:var(--flame); }
+  @media (pointer:coarse){ #cursorDot,#cursorRing,#cursorLabel{ display:none; } }
+
+  /* marquee */
+  @keyframes slideX{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  .marquee{ display:flex; width:max-content; animation:slideX 28s linear infinite; }
+  .marquee-fast{ animation-duration:18s; }
+  .marquee:hover{ animation-play-state:paused; }
+  @keyframes spinSlow{ to{ transform:rotate(360deg);} }
+  .spin-slow{ animation:spinSlow 16s linear infinite; }
+  @keyframes floatY{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .floaty{ animation:floatY 6s ease-in-out infinite; }
+
+  /* reveal */
+  [data-reveal]{ opacity:0; transform:translateY(34px); }
+  [data-reveal].in{ opacity:1; transform:none; transition:opacity .9s cubic-bezier(.22,.8,.25,1),transform .9s cubic-bezier(.22,.8,.25,1); }
+
+  /* hero entrance */
+  .h-line{ display:block; overflow:hidden; }
+  .h-line > span{ display:block; transform:translateY(110%); transition:transform 1s cubic-bezier(.19,1,.22,1); }
+  body.loaded .h-line > span{ transform:none; }
+  body.loaded .h-line:nth-child(2) > span{ transition-delay:.1s }
+  body.loaded .h-line:nth-child(3) > span{ transition-delay:.2s }
+
+  /* preloader */
+  #loader{ position:fixed; inset:0; z-index:300; background:var(--ink); color:var(--bone); display:grid; place-items:center; transition:transform .9s cubic-bezier(.76,0,.24,1); }
+  body.loaded #loader{ transform:translateY(-101%); }
+
+  /* hard-luxe components */
+  .hard{ border:1.5px solid var(--ink); box-shadow:6px 6px 0 var(--ink); }
+  .hard-sm{ border:1.5px solid var(--ink); box-shadow:4px 4px 0 var(--ink); }
+  .hard-bone{ border:1.5px solid var(--bone); }
+  .btn-hard{ transition:transform .25s cubic-bezier(.22,.8,.25,1),box-shadow .25s; }
+  .btn-hard:hover{ transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--ink); }
+  .btn-hard:active{ transform:translate(3px,3px); box-shadow:1px 1px 0 var(--ink); }
+
+  .outline-num{ color:transparent; -webkit-text-stroke:1.5px rgba(239,233,219,.28); }
+  .outline-ink{ color:transparent; -webkit-text-stroke:1.5px var(--ink); }
+
+  /* flagship carousel */
+  #stageViewport{ overflow:hidden; touch-action:pan-y; }
+  @media (min-width:1024px){ #stageViewport{ padding-left:max(1.5rem,calc((100vw - 1440px)/2 + 1.5rem)); } }
+  #stageViewport.grabbing{ cursor:grabbing; }
+  #stageTrack{ display:flex; will-change:transform; }
+  .stage-card{ flex:0 0 auto; transition:transform .7s cubic-bezier(.19,1,.22,1),opacity .5s,filter .5s; transform:scale(.92); opacity:.45; filter:saturate(.4); }
+  .stage-card.is-active{ transform:scale(1); opacity:1; filter:none; }
+  .stage-card.is-active .card-shell{ box-shadow:12px 12px 0 var(--flame); transform:translate(-4px,-4px); }
+  .card-shell{ transition:box-shadow .6s,transform .6s; }
+  .stage-card img.p-img{ transform:scale(1.15); transition:transform .8s cubic-bezier(.19,1,.22,1); }
+  .stage-card.is-active img.p-img{ transform:scale(1.02); }
+
+  .list-row{ position:relative; isolation:isolate; }
+  .list-row:before{ content:""; position:absolute; inset:0; background:var(--ink); transform:scaleY(0); transform-origin:bottom; transition:transform .45s cubic-bezier(.76,0,.24,1); z-index:-1; }
+  .list-row:hover:before{ transform:scaleY(1); }
+  .list-row:hover .lr-title{ color:var(--bone); }
+  .list-row:hover .lr-num, .list-row:hover .lr-meta{ color:var(--flame); }
+  .list-row:hover .lr-arrow{ background:var(--flame); border-color:var(--flame); color:var(--ink); transform:rotate(-45deg); }
+  .lr-title,.lr-num,.lr-meta{ transition:color .35s; }
+  .lr-arrow{ transition:.4s cubic-bezier(.22,.8,.25,1); }
+
+  #floatPreview{ position:fixed; width:300px; height:380px; z-index:60; pointer-events:none; overflow:hidden; border-radius:18px; border:1.5px solid var(--ink); box-shadow:8px 8px 0 var(--ink); opacity:0; transform:scale(.85) rotate(-4deg); transition:opacity .3s,transform .45s cubic-bezier(.22,.8,.25,1); }
+  #floatPreview.on{ opacity:1; transform:scale(1) rotate(3deg); }
+  #floatPreview img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .3s; }
+  #floatPreview img.on{ opacity:1; }
+
+  .tick{ width:8px; height:8px; border-radius:99px; background:var(--flame); display:inline-block; animation:blink 1.4s infinite; }
+  @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.25} }
+  .link-u{ background-image:linear-gradient(currentColor,currentColor); background-size:0% 1.5px; background-repeat:no-repeat; background-position:0 100%; transition:background-size .4s; }
+  .link-u:hover{ background-size:100% 1.5px; }
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition-duration:.01ms!important} }
+</style>
+</head>
+<body class="grain">
+
+<!-- cursor -->
+<div id="cursorRing"></div><div id="cursorLabel">DRAG</div><div id="cursorDot"></div>
+
+<!-- ================= PRELOADER ================= -->
+<div id="loader">
+  <div class="text-center px-6">
+    <p class="text-[12px] tracking-[.35em] uppercase opacity-60 mb-5">Consultio® — Capabilities in motion</p>
+    <div class="font-display font-extrabold leading-none text-[clamp(4rem,14vw,10rem)] tabular-nums"><span id="loadNum">00</span><span class="text-[#FF4D00]">%</span></div>
+    <div class="mt-6 h-[2px] w-[min(420px,70vw)] mx-auto bg-white/15 overflow-hidden rounded-full">
+      <div id="loadBar" class="h-full w-0 bg-[#FF4D00]"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= NAV ================= -->
+<header class="fixed top-0 inset-x-0 z-[80]">
+  <div class="mx-auto max-w-[1440px] px-4 sm:px-6">
+    <div class="mt-4 flex items-center justify-between gap-3 rounded-2xl border-[1.5px] border-[#141310] bg-[#EFE9DB]/90 backdrop-blur-xl px-4 sm:px-5 h-[64px]" style="box-shadow:5px 5px 0 #141310">
+      <a href="#top" class="flex items-center gap-2.5 font-display font-extrabold text-[19px] tracking-tight">
+        <span class="grid place-items-center w-9 h-9 rounded-xl bg-[#141310] text-[#EFE9DB] text-[15px] font-extrabold">C<span class="text-[#FF4D00]">.</span></span>
+        consultio<sup class="text-[10px] font-bold">®</sup>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-[13.5px] font-semibold tracking-wide uppercase">
+        <a href="#carousel" class="link-u">Carousel</a>
+        <a href="#index" class="link-u">Index</a>
+        <a href="#numbers" class="link-u">Studio</a>
+        <a href="#voices" class="link-u">Voices</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <span class="hidden lg:flex items-center gap-2 text-[12px] font-semibold tracking-[.14em] uppercase opacity-70">
+          <span class="tick"></span><span id="clock">00:00 MEL</span>
+        </span>
+        <a href="#contact" data-magnet class="btn-hard hidden sm:inline-flex items-center gap-2 h-[44px] px-5 rounded-full bg-[#141310] text-[#EFE9DB] text-[13.5px] font-bold border-[1.5px] border-[#141310]" style="box-shadow:4px 4px 0 #FF4D00">
+          Start a project
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+        </a>
+        <button id="burger" class="md:hidden grid place-items-center w-11 h-11 rounded-xl border-[1.5px] border-[#141310] bg-[#EFE9DB]" aria-label="Menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden hidden mt-2 rounded-2xl border-[1.5px] border-[#141310] bg-[#EFE9DB] p-4 font-display font-bold text-lg" style="box-shadow:5px 5px 0 #141310">
+      <a href="#carousel" class="block py-3 border-b border-[#141310]/10">Carousel</a>
+      <a href="#index" class="block py-3 border-b border-[#141310]/10">Index</a>
+      <a href="#numbers" class="block py-3 border-b border-[#141310]/10">Studio</a>
+      <a href="#contact" class="block py-3 text-[#FF4D00]">Start a project →</a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section id="top" class="relative blueprint pt-[130px] sm:pt-[150px] overflow-hidden">
+  <div class="mx-auto max-w-[1440px] px-4 sm:px-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 text-[12px] font-bold tracking-[.22em] uppercase">
+      <span class="inline-flex items-center gap-2 rounded-full border-[1.5px] border-[#141310] bg-white/60 px-4 py-2"><span class="tick"></span> Capabilities index — 2026</span>
+      <span class="hidden sm:inline opacity-60">Scroll for the carousel ↓</span>
+      <span class="hidden md:inline opacity-60">Melbourne — Sydney — Singapore</span>
+    </div>
+
+    <h1 class="mt-8 font-display font-extrabold leading-[.92] tracking-[-.03em] text-[clamp(3rem,10.5vw,9.2rem)]">
+      <span class="h-line"><span>Services that</span></span>
+      <span class="h-line"><span class="flex items-center gap-4 flex-wrap">don't
+        <span class="inline-flex h-[.72em] aspect-[2.2/1] rounded-full overflow-hidden border-[1.5px] border-[#141310] align-middle" style="box-shadow:4px 4px 0 #141310">
+          <img src="https://images.pexels.com/photos/8468809/pexels-photo-8468809.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=300&w=520" class="w-full h-full object-cover" alt="Studio energy">
+        </span> sit</span></span>
+      <span class="h-line"><span><span class="font-serifit font-normal tracking-normal">still</span><span class="text-[#FF4D00]">.</span>
+        <span class="inline-flex h-[.72em] aspect-square rounded-full overflow-hidden border-[1.5px] border-[#141310] align-middle floaty">
+          <img src="https://images.pexels.com/photos/39325104/pexels-photo-39325104.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=300&w=300" class="w-full h-full object-cover" alt="Consultant portrait">
+        </span></span></span>
+    </h1>
+
+    <div class="mt-10 grid lg:grid-cols-[1.1fr_.9fr_.6fr] gap-8 items-end pb-12">
+      <p class="max-w-xl text-[16.5px] leading-relaxed text-[#141310]/75" data-reveal>
+        We took six classic consulting offers — <strong class="text-[#141310]">Business Planning, Program Management, Strategy, Investment Ideas, SEO &amp; Research</strong> — and rebuilt how they move. One carousel engine. Zero templates. All momentum.
+      </p>
+      <div class="flex items-center gap-8" data-reveal>
+        <div><div class="font-display font-extrabold text-3xl">24<span class="text-[#FF4D00]">+</span></div><div class="text-xs tracking-[.18em] uppercase opacity-60 font-bold">Years</div></div>
+        <div class="w-px h-12 bg-[#141310]/15"></div>
+        <div><div class="font-display font-extrabold text-3xl">1.2<span class="text-[#FF4D00]">k</span></div><div class="text-xs tracking-[.18em] uppercase opacity-60 font-bold">Engagements</div></div>
+        <div class="w-px h-12 bg-[#141310]/15"></div>
+        <div><div class="font-display font-extrabold text-3xl">98<span class="text-[#FF4D00]">%</span></div><div class="text-xs tracking-[.18em] uppercase opacity-60 font-bold">Retention</div></div>
+      </div>
+      <div class="flex lg:justify-end" data-reveal>
+        <a href="#carousel" class="relative grid place-items-center w-[128px] h-[128px]">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 spin-slow">
+            <defs><path id="circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+            <text font-size="10.2" font-weight="700" letter-spacing="2.5"><textPath href="#circ">DRAG THE CAROUSEL • DRAG THE CAROUSEL •</textPath></text>
+          </svg>
+          <span class="grid place-items-center w-14 h-14 rounded-full bg-[#FF4D00] text-[#EFE9DB] border-[1.5px] border-[#141310]" style="box-shadow:4px 4px 0 #141310">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ticker -->
+  <div class="border-y-[1.5px] border-[#141310] bg-[#141310] text-[#EFE9DB] py-3.5 overflow-hidden -rotate-[.6deg] scale-[1.01]">
+    <div class="marquee marquee-fast gap-0 font-display font-bold text-[15px] tracking-[.14em] uppercase" id="ticker1"></div>
+  </div>
+</section>
+
+<!-- ================= FLAGSHIP CAROUSEL ================= -->
+<section id="carousel" class="relative bg-[#141310] text-[#EFE9DB] overflow-hidden">
+  <div class="absolute inset-0 blueprint-dark"></div>
+  <div id="bgNum" class="pointer-events-none select-none absolute -top-6 right-0 font-display font-extrabold leading-none text-[clamp(10rem,30vw,26rem)] outline-num tabular-nums">01</div>
+  <div class="pointer-events-none absolute -left-32 top-1/3 w-[420px] h-[420px] rounded-full bg-[#FF4D00]/25 blur-[110px]"></div>
+
+  <div class="relative mx-auto max-w-[1440px] px-4 sm:px-6 pt-20 sm:pt-24 pb-10">
+    <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
+      <div>
+        <p class="text-[12px] font-bold tracking-[.3em] uppercase text-[#FF4D00]">( 01 ) — The flagship carousel</p>
+        <h2 class="mt-4 font-display font-extrabold leading-[.95] text-[clamp(2.4rem,5.6vw,4.6rem)]">One rail.<br><span class="font-serifit font-normal">Six ways</span> to win.</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <p class="hidden md:block max-w-[280px] text-sm text-[#EFE9DB]/55 leading-relaxed">Grab it, fling it, tap the dots. The engine is hand-built — infinite loop, parallax images, autoplay with live progress.</p>
+        <div class="flex items-center gap-2.5">
+          <button id="stPrev" data-magnet aria-label="Previous" class="grid place-items-center w-[58px] h-[58px] rounded-full border-[1.5px] border-[#EFE9DB]/30 hover:bg-[#FF4D00] hover:border-[#FF4D00] hover:text-[#141310] transition">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          </button>
+          <button id="stNext" data-magnet aria-label="Next" class="grid place-items-center w-[58px] h-[58px] rounded-full bg-[#FF4D00] border-[1.5px] border-[#FF4D00] text-[#141310] hover:bg-[#EFE9DB] hover:border-[#EFE9DB] transition">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative pb-8">
+    <div id="stageViewport" class="pl-4 sm:pl-6" data-reveal>
+      <div id="stageTrack" class="gap-6 pr-6 py-8"></div>
+    </div>
+
+    <!-- control deck -->
+    <div class="relative mx-auto max-w-[1440px] px-4 sm:px-6 mt-2 pb-16">
+      <div class="flex flex-wrap items-center gap-x-8 gap-y-5 rounded-2xl border-[1.5px] border-[#EFE9DB]/20 bg-white/[.04] backdrop-blur px-5 sm:px-7 py-5">
+        <div class="font-display font-extrabold text-2xl tabular-nums"><span id="stCur">01</span><span class="opacity-35 text-lg"> / 06</span></div>
+        <div class="flex items-center gap-2.5" id="stDots"></div>
+        <div class="flex-1 min-w-[160px] h-[3px] rounded-full bg-white/15 overflow-hidden">
+          <div id="stProg" class="h-full w-0 bg-[#FF4D00] rounded-full"></div>
+        </div>
+        <div class="hidden sm:flex items-center gap-2 text-[11px] font-bold tracking-[.25em] uppercase opacity-60">
+          <svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 7h22M5 3 1 7l4 4M21 3l4 4-4 4"/></svg>
+          Drag to explore
+        </div>
+        <button id="stToggle" class="inline-flex items-center gap-2 text-[11px] font-bold tracking-[.25em] uppercase border-[1.5px] border-[#EFE9DB]/25 rounded-full px-4 py-2.5 hover:border-[#FF4D00] hover:text-[#FF4D00] transition">
+          <span id="stToggleDot" class="w-2 h-2 rounded-full bg-[#FF4D00] animate-pulse"></span><span id="stToggleTxt">Pause</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INDEX LIST ================= -->
+<section id="index" class="relative py-20 sm:py-28">
+  <div class="mx-auto max-w-[1440px] px-4 sm:px-6">
+    <div class="flex flex-wrap items-end justify-between gap-6 mb-10" data-reveal>
+      <div>
+        <p class="text-[12px] font-bold tracking-[.3em] uppercase text-[#FF4D00]">( 02 ) — Service index</p>
+        <h2 class="mt-4 font-display font-extrabold leading-[.95] text-[clamp(2.4rem,5.6vw,4.4rem)]">Hover. Click.<br><span class="font-serifit font-normal">Jump straight in.</span></h2>
+      </div>
+      <p class="max-w-sm text-[15px] text-[#141310]/65 leading-relaxed">Every row is wired to the carousel above. Hover to preview, click to teleport the rail to that service.</p>
+    </div>
+    <div id="indexList" class="border-t-[1.5px] border-[#141310]" data-reveal></div>
+    <p class="mt-6 text-[12px] font-bold tracking-[.22em] uppercase opacity-50">* From the original brief: Investment Idea · Business Planning · Program Management · Strategy · SEO Optimization · Research</p>
+  </div>
+  <div id="floatPreview"><img alt=""><img alt=""><img alt=""></div>
+</section>
+
+<!-- ================= NUMBERS / STUDIO ================= -->
+<section id="numbers" class="relative border-y-[1.5px] border-[#141310] bg-[#E6DFCE]">
+  <div class="mx-auto max-w-[1440px] px-4 sm:px-6 py-20 sm:py-24">
+    <div class="flex flex-wrap items-end justify-between gap-6 mb-12" data-reveal>
+      <div>
+        <p class="text-[12px] font-bold tracking-[.3em] uppercase text-[#FF4D00]">( 03 ) — The studio behind it</p>
+        <h2 class="mt-4 font-display font-extrabold leading-[.95] text-[clamp(2.2rem,5vw,4rem)]">Small team.<br><span class="outline-ink">Outsized outcomes.</span></h2>
+      </div>
+      <a href="#contact" data-magnet class="btn-hard inline-flex items-center gap-2 h-[54px] px-7 rounded-full bg-[#FF4D00] font-bold border-[1.5px] border-[#141310]">
+        Book a chemistry call
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+      </a>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5" data-reveal>
+      <div class="hard rounded-2xl bg-[#EFE9DB] p-7"><div class="font-display font-extrabold text-5xl tabular-nums"><span class="counter" data-to="24">0</span>+</div><p class="mt-2 text-sm font-semibold opacity-70">Years advising founders &amp; boards</p><p class="mt-4 text-[12px] font-bold tracking-[.2em] uppercase text-[#FF4D00]">Est. 2002 — Melbourne</p></div>
+      <div class="hard rounded-2xl bg-[#141310] text-[#EFE9DB] p-7"><div class="font-display font-extrabold text-5xl tabular-nums"><span class="counter" data-to="1280">0</span>+</div><p class="mt-2 text-sm font-semibold opacity-70">Engagements shipped, on time</p><p class="mt-4 text-[12px] font-bold tracking-[.2em] uppercase text-[#FF4D00]">Strategy → delivery</p></div>
+      <div class="hard rounded-2xl bg-[#EFE9DB] p-7"><div class="font-display font-extrabold text-5xl tabular-nums"><span class="counter" data-to="38">0</span></div><p class="mt-2 text-sm font-semibold opacity-70">Countries served across 4 timezones</p><p class="mt-4 text-[12px] font-bold tracking-[.2em] uppercase text-[#FF4D00]">Remote-first, on-site when it counts</p></div>
+      <div class="hard rounded-2xl bg-[#FF4D00] p-7"><div class="font-display font-extrabold text-5xl tabular-nums"><span class="counter" data-to="98">0</span>%</div><p class="mt-2 text-sm font-semibold opacity-80">Clients who come back for phase two</p><p class="mt-4 text-[12px] font-bold tracking-[.2em] uppercase">Retention is the metric</p></div>
+    </div>
+
+    <div class="mt-5 grid md:grid-cols-3 gap-5" data-reveal>
+      <div class="hard-sm rounded-2xl bg-[#EFE9DB] p-7"><p class="font-display font-extrabold text-[#FF4D00]">/ 01</p><h3 class="mt-2 font-display font-bold text-xl">Diagnose in days, not months</h3><p class="mt-2 text-sm opacity-70 leading-relaxed">Stakeholder sprints, data rooms and a one-page thesis before anyone talks retainers.</p></div>
+      <div class="hard-sm rounded-2xl bg-[#EFE9DB] p-7"><p class="font-display font-extrabold text-[#FF4D00]">/ 02</p><h3 class="mt-2 font-display font-bold text-xl">Design the smallest brave move</h3><p class="mt-2 text-sm opacity-70 leading-relaxed">Fixed scope, fixed fee, one measurable outcome. No 90-slide decks that die in inboxes.</p></div>
+      <div class="hard-sm rounded-2xl bg-[#EFE9DB] p-7"><p class="font-display font-extrabold text-[#FF4D00]">/ 03</p><h3 class="mt-2 font-display font-bold text-xl">Stay until it compounds</h3><p class="mt-2 text-sm opacity-70 leading-relaxed">We embed with your team, instrument the dashboard, then hand over the keys.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VOICES ================= -->
+<section id="voices" class="relative py-20 sm:py-28 overflow-hidden">
+  <div class="mx-auto max-w-[1100px] px-4 sm:px-6">
+    <div class="text-center" data-reveal>
+      <p class="text-[12px] font-bold tracking-[.3em] uppercase text-[#FF4D00]">( 04 ) — Client voices</p>
+      <h2 class="mt-4 font-display font-extrabold text-[clamp(2.2rem,5vw,3.8rem)] leading-[1]">Boards <span class="font-serifit font-normal">talk.</span></h2>
+    </div>
+    <div class="mt-10 hard rounded-[28px] bg-white/50 p-8 sm:p-12 relative overflow-hidden" data-reveal>
+      <svg class="absolute -top-2 right-8 opacity-10" width="120" height="120" viewBox="0 0 24 24" fill="#FF4D00"><path d="M7.5 5C5 5 3 7 3 9.5S5 14 7.5 14c.3 0 .6 0 .9-.1C7.8 16 6 17.5 3.8 18l.9 1.9C8.9 18.7 12 15 12 10.5 12 7 10 5 7.5 5m9.5 0c-2.5 0-4.5 2-4.5 4.5S14.5 14 17 14c.3 0 .6 0 .9-.1-.6 2.1-2.4 3.6-4.6 4.1l.9 1.9c4.2-1.2 7.3-4.9 7.3-9.4C21.5 7 19.5 5 17 5"/></svg>
+      <div id="quoteBox" class="min-h-[190px] sm:min-h-[160px]">
+        <p id="qText" class="font-serifit text-[clamp(1.4rem,3vw,2.1rem)] leading-snug"></p>
+        <div class="mt-7 flex items-center gap-4">
+          <img id="qImg" class="w-14 h-14 rounded-full object-cover border-[1.5px] border-[#141310]" alt="">
+          <div><div id="qName" class="font-display font-bold"></div><div id="qRole" class="text-sm opacity-60"></div></div>
+          <div class="ml-auto text-[#FF4D00] tracking-[.2em]">★★★★★</div>
+        </div>
+      </div>
+      <div class="mt-8 pt-6 border-t-[1.5px] border-[#141310]/10 flex items-center justify-between">
+        <div class="flex gap-2" id="qDots"></div>
+        <div class="flex gap-2.5">
+          <button id="qPrev" aria-label="Previous quote" class="grid place-items-center w-12 h-12 rounded-full border-[1.5px] border-[#141310] hover:bg-[#141310] hover:text-[#EFE9DB] transition"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+          <button id="qNext" aria-label="Next quote" class="grid place-items-center w-12 h-12 rounded-full bg-[#141310] text-[#EFE9DB] border-[1.5px] border-[#141310] hover:bg-[#FF4D00] hover:border-[#FF4D00] hover:text-[#141310] transition"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section id="contact" class="relative bg-[#FF4D00] border-y-[1.5px] border-[#141310] overflow-hidden">
+  <div class="marquee gap-10 py-4 font-display font-extrabold uppercase tracking-[.12em] text-[#141310]/25 text-[15px] whitespace-nowrap" id="ticker2"></div>
+  <div class="mx-auto max-w-[1440px] px-4 sm:px-6 pb-20 pt-4 grid lg:grid-cols-2 gap-12 items-center">
+    <div data-reveal>
+      <p class="text-[12px] font-bold tracking-[.3em] uppercase">( 05 ) — Your move</p>
+      <h2 class="mt-4 font-display font-extrabold leading-[.92] text-[clamp(2.8rem,7vw,6rem)]">Let's build<br>what's <span class="font-serifit font-normal">next.</span></h2>
+      <p class="mt-6 max-w-md font-medium text-[#141310]/75">Tell us where you want to be in 24 months. We'll reply within 48 hours with a tailored, data-driven first thesis — free.</p>
+    </div>
+    <form id="ctaForm" class="hard rounded-[26px] bg-[#EFE9DB] p-7 sm:p-9" data-reveal>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <label class="block"><span class="text-[11px] font-bold tracking-[.22em] uppercase opacity-60">Name</span>
+          <input required placeholder="Ada Lovelace" class="mt-2 w-full h-[54px] rounded-xl border-[1.5px] border-[#141310] bg-white/70 px-4 outline-none focus:bg-white placeholder:text-[#141310]/35"></label>
+        <label class="block"><span class="text-[11px] font-bold tracking-[.22em] uppercase opacity-60">Work email</span>
+          <input required type="email" placeholder="ada@company.com" class="mt-2 w-full h-[54px] rounded-xl border-[1.5px] border-[#141310] bg-white/70 px-4 outline-none focus:bg-white placeholder:text-[#141310]/35"></label>
+      </div>
+      <label class="block mt-4"><span class="text-[11px] font-bold tracking-[.22em] uppercase opacity-60">I need help with</span>
+        <select id="ctaService" class="mt-2 w-full h-[54px] rounded-xl border-[1.5px] border-[#141310] bg-white/70 px-4 outline-none font-semibold"></select></label>
+      <button data-magnet class="btn-hard mt-6 w-full h-[58px] rounded-xl bg-[#141310] text-[#EFE9DB] font-display font-bold text-[17px] border-[1.5px] border-[#141310]">Send the brief ↗</button>
+      <p id="ctaNote" class="mt-3 text-sm font-semibold opacity-60">No spam. No retainer talk on call one.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="relative bg-[#141310] text-[#EFE9DB] overflow-hidden">
+  <div class="mx-auto max-w-[1440px] px-4 sm:px-6 pt-16">
+    <div class="grid lg:grid-cols-[1.2fr_.7fr_.7fr_1fr] gap-10 pb-14">
+      <div>
+        <a href="#top" class="flex items-center gap-2.5 font-display font-extrabold text-xl"> <span class="grid place-items-center w-9 h-9 rounded-xl bg-[#EFE9DB] text-[#141310] text-[15px]">C<span class="text-[#FF4D00]">.</span></span>consultio<sup class="text-[10px]">®</sup></a>
+        <p class="mt-5 text-sm text-[#EFE9DB]/55 max-w-xs leading-relaxed">An independent strategy atelier. We develop the relationships that underpin the next phase of your organisation's growth.</p>
+        <div class="mt-6 flex gap-2.5">
+          <a href="#" aria-label="X" class="grid place-items-center w-10 h-10 rounded-full border-[1.5px] border-[#EFE9DB]/25 hover:bg-[#FF4D00] hover:border-[#FF4D00] hover:text-[#141310] transition text-sm font-bold">x</a>
+          <a href="#" aria-label="Instagram" class="grid place-items-center w-10 h-10 rounded-full border-[1.5px] border-[#EFE9DB]/25 hover:bg-[#FF4D00] hover:border-[#FF4D00] hover:text-[#141310] transition text-sm font-bold">ig</a>
+          <a href="#" aria-label="LinkedIn" class="grid place-items-center w-10 h-10 rounded-full border-[1.5px] border-[#EFE9DB]/25 hover:bg-[#FF4D00] hover:border-[#FF4D00] hover:text-[#141310] transition text-sm font-bold">in</a>
+          <a href="#" aria-label="Dribbble" class="grid place-items-center w-10 h-10 rounded-full border-[1.5px] border-[#EFE9DB]/25 hover:bg-[#FF4D00] hover:border-[#FF4D00] hover:text-[#141310] transition text-sm font-bold">dr</a>
+        </div>
+      </div>
+      <div>
+        <h4 class="text-[12px] font-bold tracking-[.28em] uppercase text-[#EFE9DB]/45 mb-5">Menu</h4>
+        <ul class="space-y-3 font-semibold"><li><a href="#carousel" class="link-u">The Carousel</a></li><li><a href="#index" class="link-u">Service Index</a></li><li><a href="#numbers" class="link-u">Studio</a></li><li><a href="#voices" class="link-u">Voices</a></li></ul>
+      </div>
+      <div>
+        <h4 class="text-[12px] font-bold tracking-[.28em] uppercase text-[#EFE9DB]/45 mb-5">Services</h4>
+        <ul class="space-y-3 font-semibold text-[#EFE9DB]/80"><li>Business Planning</li><li>Program Management</li><li>Strategy</li><li>Investment Idea</li><li>SEO Optimization</li></ul>
+      </div>
+      <div>
+        <h4 class="text-[12px] font-bold tracking-[.28em] uppercase text-[#EFE9DB]/45 mb-5">Studio</h4>
+        <ul class="space-y-2.5 text-sm text-[#EFE9DB]/70">
+          <li>30 Commercial Road, Fratton, Australia</li>
+          <li><a href="tel:+9884824646" class="link-u">+988 482 4646</a> · <span class="opacity-60">(305)-123-461</span></li>
+          <li><a href="mailto:info@consultio.com" class="link-u text-[#FF4D00] font-semibold">info@consultio.com</a></li>
+          <li class="opacity-60">Mon – Sat, 9:00 — 17:00 · Sun closed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="overflow-hidden px-2">
+    <div class="font-display font-extrabold text-center leading-[.8] tracking-[-.03em] text-[clamp(4rem,15.5vw,15rem)] text-transparent select-none" style="-webkit-text-stroke:1.5px rgba(239,233,219,.3)">CONSULTIO®</div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="mx-auto max-w-[1440px] px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12.5px] text-[#EFE9DB]/45">
+      <p>© 2026 Consultio Atelier — concept redesign. Details courtesy of the original brief.</p>
+      <p>Hand-built carousel engine · 0 dependencies · 60fps</p>
+    </div>
+  </div>
+</footer>
+
+<a href="#top" id="toTop" class="fixed bottom-6 right-6 z-[80] grid place-items-center w-12 h-12 rounded-full bg-[#141310] text-[#EFE9DB] border-[1.5px] border-[#141310] opacity-0 translate-y-4 pointer-events-none transition" style="box-shadow:4px 4px 0 #FF4D00" aria-label="Back to top">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</a>
+
+<script>
+/* ================= DATA (details only, from the brief) ================= */
+const SERVICES = [
+  { title:'Business Planning', tag:'Growth / Planning',
+    text:"We develop the relationships that underpin the next phase in your organisation's growth. We do this by discerning the people.",
+    img:'https://images.pexels.com/photos/7611189/pexels-photo-7611189.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=720',
+    meta:['Stakeholder maps','90-day rhythm','Board-ready'] },
+  { title:'Program Management', tag:'Delivery / Operations',
+    text:"The development of your next business plan will be executed by a brilliant team who will indicate your grand success.",
+    img:'https://images.pexels.com/photos/15141492/pexels-photo-15141492.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=720',
+    meta:['Governance','Sprint cadence','Risk radar'] },
+  { title:'Strategy', tag:'Advisory / Positioning',
+    text:"What separates us from all other agencies is the ability to offer the most user-friendly experience — end to end.",
+    img:'https://images.pexels.com/photos/39325104/pexels-photo-39325104.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+    meta:['Positioning','Pricing','Go-to-market'] },
+  { title:'Investment Idea', tag:'Capital / Insight',
+    text:"Our investment idea services provide clients with tailored, data-driven strategies and insights.",
+    img:'https://images.pexels.com/photos/5324892/pexels-photo-5324892.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=720',
+    meta:['Thesis','Diligence','Monitoring'] },
+  { title:'SEO Optimization', tag:'Digital / Compounding',
+    text:"A blueprint for accomplishing your objectives — from first thought to measurable, compounding organic growth.",
+    img:'https://images.pexels.com/photos/8468809/pexels-photo-8468809.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=720',
+    meta:['Technical','Authority','Content engine'] },
+  { title:'Market Research', tag:'Insight / Demand',
+    text:"Know the terrain before you move. We quantify demand, map competitors and size the opportunity precisely.",
+    img:'https://images.pexels.com/photos/8276185/pexels-photo-8276185.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=720',
+    meta:['Interviews','Panels','Sizing'] },
+];
+const QUOTES = [
+  { q:'“Consultio rebuilt our operating model in eleven weeks. Revenue per consultant is up 38% and the board finally reads one dashboard.”', n:'Amelia Hartley', r:'COO, Northbridge Capital', img:'https://images.pexels.com/photos/5292257/pexels-photo-5292257.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=200&w=200' },
+  { q:'“Ruthless clarity on our go-to-market. We killed two products — and tripled the third.”', n:'Daniel Okafor', r:'Founder, Vertex Labs', img:'https://images.pexels.com/photos/31913237/pexels-photo-31913237.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=200&w=200' },
+  { q:'“Delivery slippage fell from 31% to under 4% in two quarters. Governance that actually works on the ground.”', n:'Sofia Marchetti', r:'VP Delivery, Arclight', img:'https://images.pexels.com/photos/34094490/pexels-photo-34094490.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=200&w=200' },
+];
+
+/* ================= TICKERS / SELECT ================= */
+const tick = (id, items, sep) => {
+  const half = items.map(t=>`<span class="mx-5 whitespace-nowrap">${t} <span class="text-[#FF4D00] ml-10">${sep}</span></span>`).join('');
+  document.getElementById(id).innerHTML = half + half;
+};
+tick('ticker1', ['Business Planning','Program Management','Strategy','Investment Idea','SEO Optimization','Market Research'], '✦');
+tick('ticker2', ['Free 48h thesis','Fixed scope','Senior only','No templates'], '●');
+document.getElementById('ctaService').innerHTML = SERVICES.map(s=>`<option>${s.title}</option>`).join('');
+
+/* ================= PRELOADER ================= */
+(() => {
+  const num = document.getElementById('loadNum'), bar = document.getElementById('loadBar');
+  const t0 = performance.now(), dur = 1300;
+  const step = now => {
+    const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    num.textContent = String(Math.round(e * 100)).padStart(2, '0');
+    bar.style.width = (e * 100) + '%';
+    if (p < 1) requestAnimationFrame(step);
+    else setTimeout(() => document.body.classList.add('loaded'), 150);
+  };
+  requestAnimationFrame(step);
+  setTimeout(() => document.body.classList.add('loaded'), 2600); // safety
+})();
+
+/* ================= CURSOR ================= */
+(() => {
+  if (matchMedia('(pointer:coarse)').matches) return;
+  const dot = document.getElementById('cursorDot'), ring = document.getElementById('cursorRing'), lab = document.getElementById('cursorLabel');
+  let mx = -100, my = -100, rx = -100, ry = -100;
+  addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function loop(){
+    rx += (mx - rx) * .16; ry += (my - ry) * .16;
+    dot.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+    ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+    lab.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(loop);
+  })();
+  const stage = document.getElementById('stageViewport');
+  stage.addEventListener('mouseenter', () => { ring.classList.add('is-active'); lab.textContent = 'DRAG'; });
+  stage.addEventListener('mouseleave', () => { ring.classList.remove('is-active'); });
+  document.querySelectorAll('a,button,select,input,.list-row').forEach(el => {
+    el.addEventListener('mouseenter', () => { if(!ring.classList.contains('is-active')) ring.classList.add('is-flame'); });
+    el.addEventListener('mouseleave', () => ring.classList.remove('is-flame'));
+  });
+})();
+
+/* ================= FLAGSHIP CAROUSEL ENGINE ================= */
+const Stage = (() => {
+  const track = document.getElementById('stageTrack');
+  const viewport = document.getElementById('stageViewport');
+  const N = SERVICES.length, CLONE = 2, AUTOMS = 4600;
+  let pos = CLONE, step = 0, playing = true, t0 = performance.now(), elapsed = 0, dragging = false;
+
+  // build cards (real + clones)
+  const cardHTML = (s, i) => `
+    <article class="stage-card w-[82vw] sm:w-[440px] lg:w-[470px]" data-real="${i}">
+      <div class="card-shell rounded-[26px] overflow-hidden bg-[#EFE9DB] text-[#141310] border-[1.5px] border-[#141310]">
+        <div class="relative h-[300px] sm:h-[320px] overflow-hidden border-b-[1.5px] border-[#141310]">
+          <img class="p-img absolute inset-0 w-full h-full object-cover" src="${s.img}" alt="${s.title}" draggable="false">
+          <span class="absolute top-4 left-4 rounded-full bg-[#141310] text-[#EFE9DB] text-[11px] font-bold tracking-[.14em] uppercase px-3.5 py-1.5">${s.tag}</span>
+          <span class="absolute bottom-3 right-5 font-display font-extrabold text-[64px] leading-none text-white/90" style="text-shadow:2px 2px 0 #141310">${String(i+1).padStart(2,'0')}</span>
+        </div>
+        <div class="p-7">
+          <h3 class="font-display font-extrabold text-[27px] leading-[1.02]">${s.title}</h3>
+          <p class="mt-3 text-[14.5px] leading-relaxed opacity-70">${s.text}</p>
+          <div class="mt-5 flex flex-wrap gap-2">${s.meta.map(m=>`<span class="text-[11px] font-bold tracking-wide uppercase border-[1.5px] border-[#141310]/20 rounded-full px-3 py-1.5">${m}</span>`).join('')}</div>
+          <div class="mt-6 pt-5 border-t-[1.5px] border-[#141310]/10 flex items-center justify-between">
+            <a href="#contact" class="inline-flex items-center gap-2 font-bold text-[14px]">Read more
+              <span class="grid place-items-center w-8 h-8 rounded-full bg-[#141310] text-[#EFE9DB]"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+            <span class="text-[11px] font-bold tracking-[.22em] uppercase opacity-40">0${i+1} — 06</span>
+          </div>
+        </div>
+      </div>
+    </article>`;
+  const order = [];
+  for (let i = N - CLONE; i < N; i++) order.push(i);
+  for (let i = 0; i < N; i++) order.push(i);
+  for (let i = 0; i < CLONE; i++) order.push(i);
+  track.innerHTML = order.map(i => cardHTML(SERVICES[i], i)).join('');
+  const slides = [...track.children];
+
+  // dots
+  const dots = document.getElementById('stDots');
+  dots.innerHTML = SERVICES.map((_, i) => `<button data-d="${i}" aria-label="Go to ${SERVICES[i].title}" class="h-[10px] rounded-full transition-all duration-500" style="width:${i===0?34:10}px;background:${i===0?'#FF4D00':'rgba(239,233,219,.25)'}"></button>`).join('');
+  dots.addEventListener('click', e => {
+    const b = e.target.closest('[data-d]'); if (!b) return;
+    goNearest(+b.dataset.d);
+  });
+
+  const realOf = p => ((p - CLONE) % N + N) % N;
+  const measure = () => {
+    step = slides[0].getBoundingClientRect().width + 24;
+    apply(false);
+  };
+  const apply = (anim = true) => {
+    track.style.transition = anim ? 'transform .8s cubic-bezier(.19,1,.22,1)' : 'none';
+    track.style.transform = `translate3d(${-pos * step}px,0,0)`;
+    if (!anim) track.getBoundingClientRect();
+    sync(); parallax();
+  };
+  const sync = () => {
+    const r = realOf(pos);
+    slides.forEach((s, k) => s.classList.toggle('is-active', k === pos));
+    document.getElementById('stCur').textContent = String(r + 1).padStart(2, '0');
+    const bg = document.getElementById('bgNum');
+    if (bg.textContent !== String(r + 1).padStart(2, '0')) {
+      bg.style.transition = 'none'; bg.style.transform = 'translateY(30px)'; bg.style.opacity = '0';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        bg.textContent = String(r + 1).padStart(2, '0');
+        bg.style.transition = 'transform .7s cubic-bezier(.19,1,.22,1),opacity .7s';
+        bg.style.transform = 'none'; bg.style.opacity = '1';
+      }));
+    }
+    [...dots.children].forEach((d, k) => {
+      const on = k === r;
+      d.style.width = on ? '34px' : '10px';
+      d.style.background = on ? '#FF4D00' : 'rgba(239,233,219,.25)';
+    });
+  };
+  const parallax = () => {
+    const vr = viewport.getBoundingClientRect();
+    const cx = vr.left + vr.width / 2;
+    slides.forEach(s => {
+      const r = s.getBoundingClientRect();
+      const d = (r.left + r.width / 2 - cx) / vr.width; // -0.5..0.5
+      const img = s.querySelector('.p-img');
+      if (img) img.style.translate = `${(-d * 46).toFixed(1)}px 0`;
+    });
+  };
+  const normalize = () => {
+    if (pos >= CLONE + N) { pos -= N; apply(false); }
+    else if (pos < CLONE) { pos += N; apply(false); }
+  };
+  const restart = () => { t0 = performance.now(); elapsed = 0; };
+  const go = p => { pos = p; apply(true); restart(); };
+  const goNearest = real => {
+    // jump to nearest occurrence of `real` to avoid long rewinds
+    let best = pos, bd = 1e9;
+    slides.forEach((s, k) => { if (+s.dataset.real === real) { const d = Math.abs(k - pos); if (d < bd) { bd = d; best = k; } } });
+    go(best);
+  };
+
+  track.addEventListener('transitionend', normalize);
+  document.getElementById('stNext').addEventListener('click', () => go(pos + 1));
+  document.getElementById('stPrev').addEventListener('click', () => go(pos - 1));
+  addEventListener('keydown', e => {
+    const r = viewport.getBoundingClientRect();
+    if (r.top < innerHeight && r.bottom > 0) {
+      if (e.key === 'ArrowRight') go(pos + 1);
+      if (e.key === 'ArrowLeft') go(pos - 1);
+    }
+  });
+  const toggleBtn = document.getElementById('stToggle');
+  toggleBtn.addEventListener('click', () => {
+    playing = !playing;
+    document.getElementById('stToggleTxt').textContent = playing ? 'Pause' : 'Play';
+    document.getElementById('stToggleDot').style.background = playing ? '#FF4D00' : 'rgba(239,233,219,.35)';
+    restart();
+  });
+  viewport.addEventListener('mouseenter', () => dragging || (playing && (window.__stageHold = true)));
+  viewport.addEventListener('mouseleave', () => (window.__stageHold = false));
+
+  // autoplay w/ progress
+  const prog = document.getElementById('stProg');
+  (function loop(now){
+    requestAnimationFrame(loop);
+    if (!playing || dragging || window.__stageHold || document.hidden) { t0 = now - elapsed; prog.style.width = (elapsed / AUTOMS * 100) + '%'; return; }
+    elapsed = now - t0;
+    const p = Math.min(1, elapsed / AUTOMS);
+    prog.style.width = (p * 100) + '%';
+    if (p >= 1) { go(pos + 1); }
+  })(performance.now());
+
+  // drag
+  let sx = 0, sPos = 0, dx = 0, on = false, sy = 0, lock = null;
+  viewport.addEventListener('pointerdown', e => {
+    on = true; dragging = true; dx = 0; lock = null;
+    sx = e.clientX; sy = e.clientY; sPos = pos;
+    viewport.classList.add('grabbing');
+    track.style.transition = 'none';
+    viewport.setPointerCapture?.(e.pointerId);
+  });
+  viewport.addEventListener('pointermove', e => {
+    if (!on) return;
+    const x = e.clientX, y = e.clientY;
+    if (!lock) {
+      const ax = Math.abs(x - sx), ay = Math.abs(y - sy);
+      if (ax < 6 && ay < 6) return;
+      lock = ax >= ay ? 'x' : 'y';
+      if (lock === 'y') { on = false; dragging = false; viewport.classList.remove('grabbing'); apply(true); return; }
+    }
+    dx = x - sx;
+    if (e.cancelable) e.preventDefault();
+    track.style.transform = `translate3d(${-sPos * step + dx}px,0,0)`;
+    parallax();
+  });
+  const end = () => {
+    if (!on) return;
+    on = false; dragging = false; viewport.classList.remove('grabbing');
+    let mv = Math.round(-dx / step);
+    if (mv === 0 && Math.abs(dx) > step * .13) mv = dx < 0 ? 1 : -1;
+    if (Math.abs(dx) > 8) {
+      track.querySelectorAll('a').forEach(a => {
+        const blk = ev => { ev.preventDefault(); ev.stopPropagation(); a.removeEventListener('click', blk, true); };
+        a.addEventListener('click', blk, true);
+        setTimeout(() => a.removeEventListener('click', blk, true), 150);
+      });
+    }
+    go(sPos + mv);
+  };
+  viewport.addEventListener('pointerup', end);
+  viewport.addEventListener('pointercancel', end);
+  viewport.addEventListener('dragstart', e => e.preventDefault());
+
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(measure, 150); });
+  measure(); sync();
+  return { goNearest, goReal: goNearest };
+})();
+
+/* ================= INDEX LIST + FLOATING PREVIEW ================= */
+(() => {
+  const list = document.getElementById('indexList');
+  const prev = document.getElementById('floatPreview');
+  const imgs = [...prev.querySelectorAll('img')];
+  list.innerHTML = SERVICES.map((s, i) => `
+    <button data-row="${i}" class="list-row w-full text-left grid grid-cols-[auto_1fr_auto] items-center gap-4 sm:gap-8 py-6 sm:py-7 border-b-[1.5px] border-[#141310] px-2 sm:px-5">
+      <span class="lr-num font-display font-extrabold text-[15px] tabular-nums opacity-50">0${i+1}</span>
+      <span>
+        <span class="lr-title block font-display font-extrabold leading-[1] text-[clamp(1.5rem,4.4vw,3rem)]">${s.title}</span>
+        <span class="lr-meta block mt-1.5 text-[12px] font-bold tracking-[.2em] uppercase opacity-50">${s.tag}</span>
+      </span>
+      <span class="lr-arrow grid place-items-center w-12 h-12 sm:w-14 sm:h-14 rounded-full border-[1.5px] border-[#141310]">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+      </span>
+    </button>`).join('');
+
+  // floating preview follows cursor (desktop)
+  if (!matchMedia('(pointer:coarse)').matches) {
+    let px = 0, py = 0, tx = 0, ty = 0;
+    addEventListener('mousemove', e => { tx = e.clientX + 26; ty = e.clientY - 190; });
+    (function loop(){ px += (tx-px)*.12; py += (ty-py)*.12; prev.style.left = px+'px'; prev.style.top = py+'px'; requestAnimationFrame(loop); })();
+    list.addEventListener('mouseover', e => {
+      const row = e.target.closest('[data-row]'); if (!row) return;
+      const i = +row.dataset.row;
+      prev.classList.add('on');
+      imgs.forEach((im, k) => {
+        if (k === 0) { im.src = SERVICES[i].img; im.classList.add('on'); }
+        else im.classList.remove('on');
+      });
+    });
+    list.addEventListener('mouseleave', () => prev.classList.remove('on'));
+  }
+  list.addEventListener('click', e => {
+    const row = e.target.closest('[data-row]'); if (!row) return;
+    Stage.goNearest(+row.dataset.row);
+    document.getElementById('carousel').scrollIntoView({ behavior:'smooth' });
+  });
+})();
+
+/* ================= QUOTES ================= */
+(() => {
+  let i = 0, timer;
+  const T = document.getElementById('qText'), N = document.getElementById('qName'),
+        R = document.getElementById('qRole'), I = document.getElementById('qImg'),
+        D = document.getElementById('qDots');
+  D.innerHTML = QUOTES.map((_, k) => `<button data-q="${k}" class="h-[9px] rounded-full transition-all" aria-label="Quote ${k+1}"></button>`).join('');
+  const show = k => {
+    i = (k + QUOTES.length) % QUOTES.length;
+    const box = document.getElementById('quoteBox');
+    box.style.opacity = '0'; box.style.transform = 'translateY(12px)';
+    setTimeout(() => {
+      T.textContent = QUOTES[i].q; N.textContent = QUOTES[i].n; R.textContent = QUOTES[i].r; I.src = QUOTES[i].img;
+      [...D.children].forEach((d, k2) => { d.style.width = k2===i?'30px':'9px'; d.style.background = k2===i?'#FF4D00':'rgba(20,19,16,.2)'; });
+      box.style.transition = 'opacity .5s,transform .5s'; box.style.opacity = '1'; box.style.transform = 'none';
+    }, 220);
+    clearInterval(timer); timer = setInterval(() => show(i+1), 6000);
+  };
+  document.getElementById('qNext').addEventListener('click', () => show(i+1));
+  document.getElementById('qPrev').addEventListener('click', () => show(i-1));
+  D.addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (b) show(+b.dataset.q); });
+  T.textContent = QUOTES[0].q; N.textContent = QUOTES[0].n; R.textContent = QUOTES[0].r; I.src = QUOTES[0].img;
+  [...D.children].forEach((d, k2) => { d.style.width = k2===0?'30px':'9px'; d.style.background = k2===0?'#FF4D00':'rgba(20,19,16,.2)'; });
+  timer = setInterval(() => show(i+1), 6000);
+})();
+
+/* ================= REVEALS / COUNTERS / MISC ================= */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold:.12 });
+document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+
+const cio = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const el = e.target, to = +el.dataset.to, t0 = performance.now();
+  (function tick(now){ const p = Math.min(1,(now-t0)/1600); el.textContent = Math.round(to*(1-Math.pow(1-p,3))).toLocaleString(); if(p<1) requestAnimationFrame(tick); })(t0);
+  cio.unobserve(el);
+}), { threshold:.5 });
+document.querySelectorAll('.counter').forEach(el => cio.observe(el));
+
+// magnetic
+if (!matchMedia('(pointer:coarse)').matches) {
+  document.querySelectorAll('[data-magnet]').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      el.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.18}px,${(e.clientY-r.top-r.height/2)*.28}px)`;
+    });
+    el.addEventListener('mouseleave', () => el.style.transform = '');
+  });
+}
+// clock (Melbourne)
+setInterval(() => {
+  try { document.getElementById('clock').textContent = new Intl.DateTimeFormat('en-AU',{hour:'2-digit',minute:'2-digit',timeZone:'Australia/Melbourne'}).format(new Date()) + ' MEL'; } catch(e){}
+}, 1000);
+// burger / totop / form
+const mm = document.getElementById('mobileMenu');
+document.getElementById('burger').addEventListener('click', () => mm.classList.toggle('hidden'));
+mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mm.classList.add('hidden')));
+const toTop = document.getElementById('toTop');
+addEventListener('scroll', () => {
+  const y = scrollY > 600;
+  toTop.classList.toggle('opacity-0', !y); toTop.classList.toggle('translate-y-4', !y); toTop.classList.toggle('pointer-events-none', !y);
+}, { passive:true });
+document.getElementById('ctaForm').addEventListener('submit', e => {
+  e.preventDefault(); e.target.reset();
+  const n = document.getElementById('ctaNote');
+  n.textContent = '✓ Brief received — your free 48h thesis is on its way.';
+  n.style.color = '#0a7a3d'; n.style.opacity = '1';
+});
+</script>
+</body>
+</html>
