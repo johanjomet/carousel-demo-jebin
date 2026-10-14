@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Consultio — Service Carousel | Business & Strategy Consulting</title>
+<meta name="description" content="Consultio — award winning business consulting. Explore our service carousels: business planning, program management, strategy, investment ideas and SEO optimization." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+  :root{
+    --ink:#070B17;
+    --ink-2:#0C1428;
+    --brand:#FF6B2C;
+    --brand-2:#FF9D3C;
+    --navy:#17275B;
+    --muted:#6A7488;
+    --line:rgba(12,20,40,.09);
+  }
+  html,body{ -webkit-font-smoothing:antialiased; }
+  body{ font-family:'Plus Jakarta Sans',system-ui,sans-serif; color:#0C1428; background:#fff; overflow-x:hidden; }
+  h1,h2,h3,h4,.font-display{ font-family:'Sora',system-ui,sans-serif; letter-spacing:-.02em; }
+  ::selection{ background:var(--brand); color:#fff; }
+
+  /* ---------- decorative ---------- */
+  .grid-bg{
+    background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+    background-size:64px 64px;
+  }
+  .grid-bg-light{
+    background-image:linear-gradient(rgba(12,20,40,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(12,20,40,.045) 1px,transparent 1px);
+    background-size:56px 56px;
+  }
+  .glow{ position:absolute; border-radius:9999px; filter:blur(90px); pointer-events:none; }
+  .text-gradient{ background:linear-gradient(94deg,#FF6B2C,#FFB457 60%,#FF6B2C); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .shadow-soft{ box-shadow:0 2px 6px rgba(12,20,40,.04),0 18px 40px -22px rgba(12,20,40,.25); }
+  .shadow-lift{ box-shadow:0 30px 70px -32px rgba(12,20,40,.45); }
+
+  /* corner fold accent (inspired by the reference cards) */
+  .fold:after{
+    content:""; position:absolute; right:0; bottom:0; width:0; height:0;
+    border-style:solid; border-width:0 0 46px 46px; border-color:transparent transparent var(--brand) transparent;
+    transition:.45s cubic-bezier(.22,.8,.25,1); opacity:.95;
+  }
+  .fold:hover:after{ border-width:0 0 110px 110px; }
+
+  /* ---------- carousel core ---------- */
+  .rail-viewport{ overflow:hidden; cursor:grab; }
+  .rail-viewport.is-dragging{ cursor:grabbing; }
+  .rail-track{ display:flex; will-change:transform; touch-action:pan-y; }
+  .rail-track > *{ flex:0 0 auto; min-width:0; }
+  .rail-btn{
+    display:grid; place-items:center; width:54px; height:54px; border-radius:9999px;
+    background:#fff; color:#0C1428; border:1px solid var(--line);
+    transition:.35s cubic-bezier(.22,.8,.25,1); box-shadow:0 14px 30px -18px rgba(12,20,40,.5);
+  }
+  .rail-btn:hover{ background:var(--brand); color:#fff; border-color:var(--brand); transform:translateY(-3px); box-shadow:0 18px 34px -14px rgba(255,107,44,.6); }
+  .rail-btn.ghost{ background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.18); color:#fff; backdrop-filter:blur(8px); }
+  .rail-btn.ghost:hover{ background:var(--brand); border-color:var(--brand); }
+  .dot{ width:9px; height:9px; border-radius:9999px; background:rgba(12,20,40,.18); transition:.4s cubic-bezier(.22,.8,.25,1); }
+  .dot.is-active{ width:34px; background:var(--brand); }
+  .dot.light{ background:rgba(255,255,255,.26); }
+  .dot.light.is-active{ background:var(--brand); }
+  .progress-track{ position:relative; height:3px; width:100%; background:rgba(12,20,40,.1); border-radius:9999px; overflow:hidden; }
+  .progress-track.light{ background:rgba(255,255,255,.14); }
+  .progress-bar{ position:absolute; inset:0 auto 0 0; width:0%; background:linear-gradient(90deg,var(--brand),var(--brand-2)); border-radius:9999px; }
+
+  /* coverflow */
+  .cf-stage{ position:relative; perspective:1800px; }
+  .cf-item{ position:absolute; top:0; left:50%; transition:transform .85s cubic-bezier(.19,1,.22,1),opacity .6s ease,filter .6s ease; transform-style:preserve-3d; }
+
+  /* reveal */
+  [data-reveal]{ opacity:0; transform:translateY(26px); }
+  .revealed[data-reveal]{ opacity:1; transform:none; transition:opacity .9s cubic-bezier(.22,.8,.25,1),transform .9s cubic-bezier(.22,.8,.25,1); }
+
+  /* marquee */
+  @keyframes slide-x{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+  .marquee{ display:flex; width:max-content; animation:slide-x 36s linear infinite; }
+  .marquee:hover{ animation-play-state:paused; }
+  @keyframes float-y{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-14px);} }
+  .floaty{ animation:float-y 7s ease-in-out infinite; }
+  @keyframes spin-slow{ to{ transform:rotate(360deg);} }
+  .spin-slow{ animation:spin-slow 22s linear infinite; }
+
+  .link-underline{ background-image:linear-gradient(var(--brand),var(--brand)); background-size:0% 1.5px; background-repeat:no-repeat; background-position:0 100%; transition:background-size .4s ease; }
+  .link-underline:hover{ background-size:100% 1.5px; }
+  .nav-pill{ position:relative; }
+  .nav-pill:before{ content:""; position:absolute; inset:-8px -14px; border-radius:9999px; background:rgba(255,255,255,.1); opacity:0; transform:scale(.85); transition:.35s cubic-bezier(.22,.8,.25,1); }
+  .nav-pill:hover:before{ opacity:1; transform:scale(1); }
+  .btn-sheen{ position:relative; overflow:hidden; }
+  .btn-sheen:after{ content:""; position:absolute; top:0; left:-130%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent); transform:skewX(-20deg); transition:left .7s ease; }
+  .btn-sheen:hover:after{ left:130%; }
+  .no-scrollbar::-webkit-scrollbar{ display:none; }
+  /* header colour inversion when solid */
+  .hdr-solid{ background:#fff!important; border-color:rgba(12,20,40,.08)!important; box-shadow:0 2px 6px rgba(12,20,40,.04),0 18px 40px -26px rgba(12,20,40,.35); }
+  .hdr-solid .nav-ink{ color:#0C1428!important; }
+  .hdr-solid button.nav-ink{ border-color:rgba(12,20,40,.12)!important; }
+  .hdr-solid .nav-pill:before{ background:rgba(12,20,40,.06); }
+  /* active thumbnail */
+  .thumb-active{ background:#0C1428!important; color:#fff!important; transform:translateY(-4px); box-shadow:0 18px 40px -22px rgba(12,20,40,.6); border-color:#0C1428!important; }
+  .thumb-active span:first-child{ background:#FF6B2C!important; color:#fff!important; }
+  @media (prefers-reduced-motion:reduce){ *{ animation:none!important; transition-duration:.01ms!important; } }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- scroll progress -->
+<div class="fixed top-0 left-0 right-0 h-[3px] z-[100] bg-transparent">
+  <div id="scrollProgress" class="h-full w-0 bg-gradient-to-r from-[#FF6B2C] to-[#FFB457]"></div>
+</div>
+
+<!-- ======================= TOP BAR ======================= -->
+<div class="hidden lg:block relative z-[55] bg-[#070B17] text-white/70 text-[13px]">
+  <div class="mx-auto max-w-[1320px] px-6 h-11 flex items-center justify-between">
+    <p>Welcome to our consulting company <span class="text-[#FF9D3C] font-semibold">Consultio</span></p>
+    <div class="flex items-center gap-7">
+      <a href="tel:+13051234610" class="flex items-center gap-2 hover:text-white transition">
+        <span class="grid place-items-center w-7 h-7 rounded-full bg-white/5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF6B2C" stroke-width="2.2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.26-1.26a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg></span>
+        Call Us: (305)-123-461
+      </a>
+      <a href="mailto:info@consultio.com" class="flex items-center gap-2 hover:text-white transition">
+        <span class="grid place-items-center w-7 h-7 rounded-full bg-white/5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF6B2C" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 7 9 6 9-6"/></svg></span>
+        Mail us for help: info@consultio.com
+      </a>
+      <span class="flex items-center gap-2">
+        <span class="grid place-items-center w-7 h-7 rounded-full bg-white/5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF6B2C" stroke-width="2.2"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+        388 St Kilda Road, Melbourne
+      </span>
+      <span class="flex items-center gap-3 pl-5 border-l border-white/10">
+        <a href="#" aria-label="Facebook" class="hover:text-[#FF9D3C] transition">f</a>
+        <a href="#" aria-label="Twitter" class="hover:text-[#FF9D3C] transition">x</a>
+        <a href="#" aria-label="Instagram" class="hover:text-[#FF9D3C] transition">ig</a>
+        <a href="#" aria-label="LinkedIn" class="hover:text-[#FF9D3C] transition">in</a>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= HEADER ======================= -->
+<header id="siteHeader" class="sticky top-0 z-50 transition-all duration-500">
+  <div class="mx-auto max-w-[1320px] px-6">
+    <div id="headerInner" class="mt-4 rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl transition-all duration-500">
+      <div class="flex items-center justify-between gap-6 px-5 lg:px-7 h-[74px]">
+        <!-- logo -->
+        <a href="#" class="flex items-center gap-3 shrink-0">
+          <span class="relative grid place-items-center w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF6B2C] to-[#FF9D3C] shadow-[0_12px_26px_-12px_rgba(255,107,44,.9)]">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><path d="M3 17.5 9 11l4 4 8-8.5"/><path d="M21 3.5v6h-6"/></svg>
+          </span>
+          <span class="nav-ink font-display text-[22px] font-extrabold tracking-tight text-white">Consult<span class="text-[#FF6B2C]">io</span></span>
+        </a>
+
+        <!-- nav -->
+        <nav class="hidden xl:flex items-center gap-8 text-[15px] font-semibold">
+          <a href="#home" class="nav-ink nav-pill text-white"><span class="relative">Home</span></a>
+          <a href="#services" class="nav-ink nav-pill text-white/85 hover:text-white"><span class="relative">Pages</span></a>
+          <a href="#services" class="nav-ink nav-pill text-white/85 hover:text-white"><span class="relative">Services</span></a>
+          <a href="#work" class="nav-ink nav-pill text-white/85 hover:text-white"><span class="relative">Portfolio</span></a>
+          <a href="#insights" class="nav-ink nav-pill text-white/85 hover:text-white"><span class="relative">Blog</span></a>
+          <a href="#elements" class="nav-ink nav-pill text-white/85 hover:text-white"><span class="relative">Elements</span></a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <button class="nav-ink hidden sm:grid place-items-center w-10 h-10 rounded-full border border-white/15 text-white hover:bg-white/10 transition" aria-label="Search">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          </button>
+          <a href="#contact" class="btn-sheen hidden md:inline-flex items-center gap-2 h-[46px] px-6 rounded-full bg-gradient-to-r from-[#FF6B2C] to-[#FF9D3C] text-white font-bold text-[14px] shadow-[0_16px_34px_-16px_rgba(255,107,44,.95)] hover:-translate-y-0.5 transition">
+            Submit Service
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <button id="burger" class="xl:hidden nav-ink grid place-items-center w-11 h-11 rounded-xl border border-white/15 text-white" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- mobile drawer -->
+<div id="drawer" class="fixed inset-0 z-[60] hidden">
+  <div class="absolute inset-0 bg-[#070B17]/70 backdrop-blur-sm" data-close></div>
+  <aside class="absolute right-0 top-0 h-full w-[86%] max-w-[380px] bg-[#0C1428] p-8 translate-x-full transition-transform duration-500" id="drawerPanel">
+    <div class="flex items-center justify-between mb-10">
+      <span class="font-display text-xl font-extrabold text-white">Consult<span class="text-[#FF6B2C]">io</span></span>
+      <button data-close class="grid place-items-center w-10 h-10 rounded-full border border-white/15 text-white">✕</button>
+    </div>
+    <nav class="flex flex-col gap-1 text-white">
+      <a href="#home" data-close class="py-3.5 border-b border-white/10 font-semibold">Home</a>
+      <a href="#services" data-close class="py-3.5 border-b border-white/10 font-semibold">Services</a>
+      <a href="#work" data-close class="py-3.5 border-b border-white/10 font-semibold">Portfolio</a>
+      <a href="#elements" data-close class="py-3.5 border-b border-white/10 font-semibold">Elements</a>
+      <a href="#insights" data-close class="py-3.5 border-b border-white/10 font-semibold">Blog</a>
+      <a href="#contact" data-close class="py-3.5 border-b border-white/10 font-semibold">Contact</a>
+    </nav>
+    <a href="#contact" data-close class="mt-8 inline-flex items-center justify-center w-full h-12 rounded-full bg-[#FF6B2C] text-white font-bold">Submit Service</a>
+    <div class="mt-10 text-white/55 text-sm space-y-2">
+      <p>info@consultio.com</p>
+      <p>(305)-123-461</p>
+      <p>388 St Kilda Road, Melbourne</p>
+    </div>
+  </aside>
+</div>
+
+<!-- ======================= HERO ======================= -->
+<section id="home" class="relative -mt-[90px] pt-[150px] pb-24 lg:pb-32 bg-[#070B17] overflow-hidden">
+  <div class="absolute inset-0 grid-bg opacity-70"></div>
+  <div class="glow w-[620px] h-[620px] -top-40 -left-32 bg-[#FF6B2C]/25"></div>
+  <div class="glow w-[520px] h-[520px] top-10 right-0 bg-[#2F5BFF]/20"></div>
+  <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#070B17]"></div>
+
+  <div class="relative mx-auto max-w-[1320px] px-6">
+    <div class="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-14 items-center">
+      <!-- copy -->
+      <div data-reveal>
+        <div class="inline-flex items-center gap-2.5 rounded-full border border-white/12 bg-white/[0.05] px-4 py-2 text-[13px] font-semibold text-white/80 backdrop-blur">
+          <span class="relative flex w-2 h-2">
+            <span class="absolute inline-flex w-full h-full rounded-full bg-[#FF6B2C] opacity-75 animate-ping"></span>
+            <span class="relative inline-flex w-2 h-2 rounded-full bg-[#FF6B2C]"></span>
+          </span>
+          Elements › Service Carousel
+        </div>
+
+        <h1 class="mt-7 font-display text-white text-[clamp(2.6rem,6vw,4.6rem)] leading-[1.03] font-extrabold">
+          The <span class="text-gradient">Service Carousel</span><br>reimagined for growth.
+        </h1>
+
+        <p class="mt-6 max-w-xl text-[17px] leading-relaxed text-white/60">
+          We develop the relationships that underpin the next phase in your organisation's growth —
+          strategy, planning and execution, presented in eleven hand-crafted carousel layouts.
+        </p>
+
+        <div class="mt-9 flex flex-wrap items-center gap-4">
+          <a href="#services" class="btn-sheen inline-flex items-center gap-2.5 h-[58px] px-8 rounded-full bg-gradient-to-r from-[#FF6B2C] to-[#FF9D3C] text-white font-bold shadow-[0_22px_45px_-18px_rgba(255,107,44,.95)] hover:-translate-y-1 transition">
+            Explore Services
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="#showreel" class="group inline-flex items-center gap-3 h-[58px] px-7 rounded-full border border-white/15 text-white font-semibold hover:bg-white/5 transition">
+            <span class="grid place-items-center w-9 h-9 rounded-full bg-white/10 group-hover:bg-[#FF6B2C] transition">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+            Watch showreel
+          </a>
+        </div>
+
+        <div class="mt-12 flex flex-wrap items-center gap-x-10 gap-y-5">
+          <div class="flex items-center gap-3">
+            <div class="flex -space-x-3">
+              <img class="w-10 h-10 rounded-full object-cover ring-2 ring-[#070B17]" src="https://images.pexels.com/photos/6814524/pexels-photo-6814524.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=120&w=120" alt="">
+              <img class="w-10 h-10 rounded-full object-cover ring-2 ring-[#070B17]" src="https://images.pexels.com/photos/7964356/pexels-photo-7964356.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=120&w=120" alt="">
+              <img class="w-10 h-10 rounded-full object-cover ring-2 ring-[#070B17]" src="https://images.pexels.com/photos/13801510/pexels-photo-13801510.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=120&w=120" alt="">
+            </div>
+            <div class="text-sm">
+              <div class="text-white font-bold">4.9/5 <span class="text-[#FF9D3C]">★★★★★</span></div>
+              <div class="text-white/45">from 2,400+ clients</div>
+            </div>
+          </div>
+          <div class="h-10 w-px bg-white/10 hidden sm:block"></div>
+          <div class="text-sm text-white/55 max-w-[220px]">Trusted by founders in <strong class="text-white">38 countries</strong> since 2004.</div>
+        </div>
+      </div>
+
+      <!-- 3D coverflow carousel -->
+      <div data-reveal>
+        <div id="coverflow" class="relative select-none">
+          <div class="cf-stage h-[520px] sm:h-[560px]" data-cf-stage></div>
+
+          <div class="mt-2 flex items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+              <button class="rail-btn ghost" data-cf-prev aria-label="Previous service">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+              </button>
+              <button class="rail-btn ghost" data-cf-next aria-label="Next service">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2" data-cf-dots></div>
+            <div class="font-display text-white/35 text-sm tabular-nums"><span data-cf-current class="text-white text-xl font-bold">01</span> / <span data-cf-total>06</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= LOGO MARQUEE ======================= -->
+<section class="relative bg-[#070B17] border-t border-white/[0.07] py-8 overflow-hidden">
+  <div class="marquee gap-16 items-center opacity-50 text-white font-display font-bold text-xl tracking-tight" id="logoMarquee"></div>
+  <div class="pointer-events-none absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#070B17] to-transparent"></div>
+  <div class="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#070B17] to-transparent"></div>
+</section>
+
+<!-- ======================= CAROUSEL 01 — SIGNATURE CARDS ======================= -->
+<section id="services" class="relative py-24 lg:py-32 bg-[#F6F7FB] overflow-hidden">
+  <div class="absolute inset-0 grid-bg-light opacity-60"></div>
+  <div class="glow w-[480px] h-[480px] -left-40 top-20 bg-[#FF6B2C]/10"></div>
+
+  <div class="relative mx-auto max-w-[1320px] px-6">
+    <div class="flex flex-wrap items-end justify-between gap-8 mb-14" data-reveal>
+      <div class="max-w-2xl">
+        <span class="inline-flex items-center gap-2 text-[#FF6B2C] font-bold text-sm tracking-[.22em] uppercase">
+          <span class="w-8 h-px bg-[#FF6B2C]"></span> What we do
+        </span>
+        <h2 class="mt-4 font-display text-[clamp(2.1rem,4.4vw,3.4rem)] leading-[1.08] font-extrabold">
+          Signature services, <span class="text-gradient">built to compound.</span>
+        </h2>
+      </div>
+      <div class="flex items-center gap-3" data-rail-nav="rail-1">
+        <button class="rail-btn" data-prev aria-label="Previous"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button class="rail-btn" data-next aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+
+    <div class="relative" data-rail id="rail-1"
+         data-options='{"perView":{"0":1,"640":2,"1100":3},"gap":28,"autoplay":5200,"loop":true}' data-reveal>
+      <div class="rail-viewport -mx-2 px-2 py-3" data-viewport>
+        <div class="rail-track" data-track></div>
+      </div>
+      <div class="mt-10 flex items-center gap-8">
+        <div class="flex items-center gap-2.5" data-dots></div>
+        <div class="progress-track flex-1 max-w-sm"><div class="progress-bar" data-progress></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CAROUSEL 02 — FULL-BLEED IMAGE SLIDES ======================= -->
+<section id="work" class="relative py-24 lg:py-32 bg-[#070B17] overflow-hidden">
+  <div class="absolute inset-0 grid-bg opacity-60"></div>
+  <div class="glow w-[560px] h-[560px] right-[-10%] bottom-0 bg-[#FF6B2C]/18"></div>
+
+  <div class="relative">
+    <div class="mx-auto max-w-[1320px] px-6 flex flex-wrap items-end justify-between gap-8 mb-14" data-reveal>
+      <div class="max-w-2xl">
+        <span class="inline-flex items-center gap-2 text-[#FF9D3C] font-bold text-sm tracking-[.22em] uppercase">
+          <span class="w-8 h-px bg-[#FF9D3C]"></span> In the field
+        </span>
+        <h2 class="mt-4 font-display text-white text-[clamp(2.1rem,4.4vw,3.4rem)] leading-[1.08] font-extrabold">
+          Work that moves the needle.
+        </h2>
+      </div>
+      <p class="max-w-sm text-white/55">Drag the rail, flick it, or use the arrows — the engine is hand-written, dependency-free and buttery on touch.</p>
+    </div>
+
+    <div class="relative pl-6 lg:pl-[max(1.5rem,calc((100vw-1320px)/2))]" data-rail id="rail-2"
+         data-options='{"perView":{"0":1.08,"700":1.7,"1100":2.35},"gap":26,"autoplay":4600,"loop":true}' data-reveal>
+      <div class="rail-viewport" data-viewport>
+        <div class="rail-track" data-track></div>
+      </div>
+      <div class="mx-auto max-w-[1320px] pr-6 mt-10 flex items-center justify-between gap-6">
+        <div class="flex items-center gap-2.5" data-dots></div>
+        <div class="flex items-center gap-3">
+          <button class="rail-btn ghost" data-prev aria-label="Previous"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+          <button class="rail-btn ghost" data-next aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= STATS ======================= -->
+<section class="relative bg-white py-20">
+  <div class="mx-auto max-w-[1320px] px-6">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="statGrid" data-reveal></div>
+  </div>
+</section>
+
+<!-- ======================= CAROUSEL 03 — SPOTLIGHT + THUMBNAILS ======================= -->
+<section id="elements" class="relative py-24 lg:py-32 bg-[#F6F7FB] overflow-hidden">
+  <div class="glow w-[520px] h-[520px] left-[-12%] bottom-[-10%] bg-[#17275B]/10"></div>
+  <div class="relative mx-auto max-w-[1320px] px-6">
+    <div class="text-center max-w-2xl mx-auto mb-14" data-reveal>
+      <span class="inline-flex items-center gap-2 text-[#FF6B2C] font-bold text-sm tracking-[.22em] uppercase justify-center">
+        <span class="w-8 h-px bg-[#FF6B2C]"></span> Spotlight <span class="w-8 h-px bg-[#FF6B2C]"></span>
+      </span>
+      <h2 class="mt-4 font-display text-[clamp(2.1rem,4.4vw,3.4rem)] leading-[1.08] font-extrabold">One service at a time, in depth.</h2>
+    </div>
+
+    <div class="relative rounded-[32px] bg-white shadow-lift overflow-hidden border border-[rgba(12,20,40,.06)]" data-rail id="rail-3"
+         data-options='{"perView":{"0":1},"gap":0,"autoplay":6500,"loop":true}' data-reveal>
+      <div class="rail-viewport" data-viewport>
+        <div class="rail-track" data-track></div>
+      </div>
+      <div class="absolute bottom-6 right-6 flex items-center gap-3 z-20">
+        <button class="rail-btn" data-prev aria-label="Previous"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button class="rail-btn" data-next aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+
+    <!-- thumbnail nav -->
+    <div class="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3" id="rail3Thumbs" data-reveal></div>
+  </div>
+</section>
+
+<!-- ======================= SHOWREEL / CTA STRIP ======================= -->
+<section id="showreel" class="relative py-24 lg:py-28 bg-[#070B17] overflow-hidden">
+  <img src="https://images.pexels.com/photos/7433898/pexels-photo-7433898.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1800" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20">
+  <div class="absolute inset-0 bg-gradient-to-r from-[#070B17] via-[#070B17]/85 to-transparent"></div>
+  <div class="relative mx-auto max-w-[1320px] px-6 grid lg:grid-cols-2 gap-12 items-center">
+    <div data-reveal>
+      <h2 class="font-display text-white text-[clamp(2rem,4vw,3.1rem)] leading-[1.1] font-extrabold">
+        A blueprint for accomplishing your objectives — from thought to outcome.
+      </h2>
+      <p class="mt-5 text-white/60 max-w-lg">The development of your next business plan will be executed by a brilliant team who will indicate your grand success.</p>
+      <a href="#contact" class="btn-sheen mt-8 inline-flex items-center gap-2.5 h-[56px] px-8 rounded-full bg-white text-[#0C1428] font-bold hover:-translate-y-1 transition">
+        Book a free consultation
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+    <div class="flex lg:justify-end" data-reveal>
+      <button class="relative grid place-items-center w-36 h-36 rounded-full bg-[#FF6B2C]/15 backdrop-blur border border-white/15 floaty">
+        <span class="absolute inset-0 rounded-full border border-[#FF6B2C]/40 animate-ping"></span>
+        <span class="grid place-items-center w-20 h-20 rounded-full bg-gradient-to-br from-[#FF6B2C] to-[#FF9D3C] text-white shadow-[0_20px_50px_-15px_rgba(255,107,44,.9)]">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CAROUSEL 04 — TESTIMONIALS ======================= -->
+<section id="insights" class="relative py-24 lg:py-32 bg-white overflow-hidden">
+  <div class="relative mx-auto max-w-[1320px] px-6">
+    <div class="flex flex-wrap items-end justify-between gap-8 mb-14" data-reveal>
+      <div class="max-w-xl">
+        <span class="inline-flex items-center gap-2 text-[#FF6B2C] font-bold text-sm tracking-[.22em] uppercase">
+          <span class="w-8 h-px bg-[#FF6B2C]"></span> Client voices
+        </span>
+        <h2 class="mt-4 font-display text-[clamp(2.1rem,4.4vw,3.4rem)] leading-[1.08] font-extrabold">Loved by the boards we sit with.</h2>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="rail-btn" data-prev data-rail-nav-for="rail-4" aria-label="Previous"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button class="rail-btn" data-next data-rail-nav-for="rail-4" aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+
+    <div data-rail id="rail-4" data-options='{"perView":{"0":1,"900":2},"gap":28,"autoplay":5800,"loop":true}' data-reveal>
+      <div class="rail-viewport -mx-2 px-2 py-2" data-viewport>
+        <div class="rail-track" data-track></div>
+      </div>
+      <div class="mt-10 flex items-center gap-2.5 justify-center" data-dots></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CONTACT / NEWSLETTER CTA ======================= -->
+<section id="contact" class="relative py-20 lg:py-24 bg-[#F6F7FB]">
+  <div class="mx-auto max-w-[1320px] px-6">
+    <div class="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#17275B] via-[#0C1428] to-[#070B17] px-8 sm:px-14 py-14 lg:py-16 shadow-lift" data-reveal>
+      <div class="absolute inset-0 grid-bg opacity-50"></div>
+      <div class="glow w-[400px] h-[400px] -right-20 -top-24 bg-[#FF6B2C]/30"></div>
+      <div class="relative grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <h2 class="font-display text-white text-[clamp(1.9rem,3.6vw,2.8rem)] font-extrabold leading-[1.12]">Let's build the next phase of your growth.</h2>
+          <p class="mt-4 text-white/60 max-w-md">Tell us where you want to be in 24 months. We'll send a tailored, data-driven roadmap within 48 hours.</p>
+        </div>
+        <form class="relative" id="newsletterForm">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input required type="email" placeholder="Your work email address" class="h-[60px] flex-1 rounded-full bg-white/[0.07] border border-white/15 px-6 text-white placeholder-white/40 outline-none focus:border-[#FF6B2C] focus:bg-white/10 transition">
+            <button class="btn-sheen h-[60px] px-8 rounded-full bg-gradient-to-r from-[#FF6B2C] to-[#FF9D3C] text-white font-bold shadow-[0_20px_40px_-18px_rgba(255,107,44,.95)] hover:-translate-y-0.5 transition">Get my roadmap</button>
+          </div>
+          <p class="mt-3 text-white/40 text-sm pl-2" id="formNote">No spam. Unsubscribe anytime.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FOOTER ======================= -->
+<footer class="relative bg-[#070B17] text-white/60 pt-20 overflow-hidden">
+  <div class="absolute inset-0 grid-bg opacity-40"></div>
+  <div class="relative mx-auto max-w-[1320px] px-6">
+    <div class="grid lg:grid-cols-[1.3fr_.8fr_.8fr_1.3fr] gap-12 pb-16">
+      <div>
+        <a href="#" class="flex items-center gap-3 mb-6">
+          <span class="grid place-items-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF6B2C] to-[#FF9D3C]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><path d="M3 17.5 9 11l4 4 8-8.5"/><path d="M21 3.5v6h-6"/></svg>
+          </span>
+          <span class="font-display text-[22px] font-extrabold text-white">Consult<span class="text-[#FF6B2C]">io</span></span>
+        </a>
+        <ul class="space-y-4 text-[15px]">
+          <li class="flex gap-3"><svg class="shrink-0 mt-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B2C" stroke-width="2.2"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> 30 Commercial Road,<br>Fratton, Australia</li>
+          <li class="flex gap-3"><svg class="shrink-0 mt-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B2C" stroke-width="2.2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.26-1.26a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg> +988 482 4646</li>
+          <li class="flex gap-3"><svg class="shrink-0 mt-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B2C" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Open Hours:<br>Mon – Sat (9.00 am – 5.00 pm)<br>Sunday: CLOSED</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-display font-bold text-lg mb-6">Links</h4>
+        <ul class="space-y-3.5 text-[15px]">
+          <li><a href="#home" class="link-underline hover:text-white transition">Home</a></li>
+          <li><a href="#services" class="link-underline hover:text-white transition">About us</a></li>
+          <li><a href="#services" class="link-underline hover:text-white transition">Services</a></li>
+          <li><a href="#work" class="link-underline hover:text-white transition">Portfolio</a></li>
+          <li><a href="#insights" class="link-underline hover:text-white transition">Testimonials</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-display font-bold text-lg mb-6">Company</h4>
+        <ul class="space-y-3.5 text-[15px]">
+          <li><a href="#elements" class="link-underline hover:text-white transition">Elements</a></li>
+          <li><a href="#insights" class="link-underline hover:text-white transition">Blog</a></li>
+          <li><a href="#contact" class="link-underline hover:text-white transition">Contact</a></li>
+          <li><a href="#" class="link-underline hover:text-white transition">Privacy Policy</a></li>
+          <li><a href="#" class="link-underline hover:text-white transition">Careers</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-display font-bold text-lg mb-6">Newsletter</h4>
+        <p class="text-[15px] mb-5">Send us a newsletter to get update.</p>
+        <form class="flex rounded-full bg-white/[0.06] border border-white/12 p-1.5 focus-within:border-[#FF6B2C] transition" onsubmit="event.preventDefault();this.reset();">
+          <input type="email" required placeholder="Your mail address" class="flex-1 bg-transparent px-4 text-sm text-white placeholder-white/40 outline-none">
+          <button class="grid place-items-center w-11 h-11 rounded-full bg-[#FF6B2C] text-white shrink-0 hover:bg-[#FF9D3C] transition" aria-label="Subscribe">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </form>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="#" class="flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.05] px-4 py-2.5 hover:border-[#FF6B2C] transition">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M16.37 12.76c.03 3.13 2.74 4.17 2.77 4.18-.02.07-.43 1.49-1.42 2.95-.86 1.26-1.75 2.52-3.16 2.55-1.38.03-1.83-.82-3.41-.82-1.58 0-2.08.79-3.39.85-1.36.05-2.39-1.37-3.26-2.63-1.78-2.57-3.14-7.27-1.31-10.44.9-1.57 2.52-2.57 4.28-2.6 1.33-.02 2.59.9 3.41.9.81 0 2.34-1.11 3.95-.95.67.03 2.56.27 3.78 2.05-.1.06-2.25 1.32-2.24 3.96M13.9 4.3c.72-.88 1.21-2.1 1.08-3.3-1.04.04-2.3.69-3.05 1.56-.67.78-1.26 2.02-1.1 3.2 1.16.09 2.35-.59 3.07-1.46"/></svg>
+            <span class="text-left leading-tight"><span class="block text-[10px] text-white/45">Download on the</span><span class="block text-white text-sm font-semibold">App Store</span></span>
+          </a>
+          <a href="#" class="flex items-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.05] px-4 py-2.5 hover:border-[#FF6B2C] transition">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#FF6B2C" d="m13.8 12.3 2.4-2.4 3.9 2.2c.8.5.8 1.3 0 1.8l-3.9 2.2z"/><path fill="#fff" d="M3.4 2.3 13 11.9l-9.6 9.6c-.3-.2-.5-.6-.5-1.1V3.4c0-.5.2-.9.5-1.1"/><path fill="#fff" opacity=".7" d="m4.6 1.9 9.9 5.6-2.3 2.3-8.8-8.8c.3-.1.8-.1 1.2.9z"/><path fill="#fff" opacity=".85" d="m14.5 16.5-9.9 5.6c-.4.2-.8.2-1.2 0l8.8-8.8z"/></svg>
+            <span class="text-left leading-tight"><span class="block text-[10px] text-white/45">Get it on</span><span class="block text-white text-sm font-semibold">Google Play</span></span>
+          </a>
+        </div>
+        <div class="mt-6 flex items-center gap-2.5">
+          <a href="#" class="grid place-items-center w-9 h-9 rounded-full bg-white/[0.07] text-white/70 text-sm hover:bg-[#FF6B2C] hover:text-white transition">f</a>
+          <a href="#" class="grid place-items-center w-9 h-9 rounded-full bg-white/[0.07] text-white/70 text-sm hover:bg-[#FF6B2C] hover:text-white transition">x</a>
+          <a href="#" class="grid place-items-center w-9 h-9 rounded-full bg-white/[0.07] text-white/70 text-sm hover:bg-[#FF6B2C] hover:text-white transition">in</a>
+          <a href="#" class="grid place-items-center w-9 h-9 rounded-full bg-white/[0.07] text-white/70 text-sm hover:bg-[#FF6B2C] hover:text-white transition">ig</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-white/[0.08] py-7 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+      <p>2026 © All rights reserved by <a href="#" class="text-[#FF9D3C] font-semibold">CaseThemes</a></p>
+      <p class="text-white/35">Hand-built carousel engine · 0 dependencies · 60fps</p>
+    </div>
+  </div>
+</footer>
+
+<a href="#home" id="toTop" class="fixed bottom-7 right-7 z-50 grid place-items-center w-12 h-12 rounded-full bg-[#FF6B2C] text-white shadow-[0_18px_34px_-14px_rgba(255,107,44,.95)] opacity-0 translate-y-4 pointer-events-none transition">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</a>
+
+<script>
+/* =========================================================
+   DATA
+   ========================================================= */
+const IMG = {
+  team:   'https://images.pexels.com/photos/20752572/pexels-photo-20752572.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1200',
+  women:  'https://images.pexels.com/photos/8837810/pexels-photo-8837810.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1200',
+  docs:   'https://images.pexels.com/photos/8124222/pexels-photo-8124222.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1200',
+  meet:   'https://images.pexels.com/photos/12903339/pexels-photo-12903339.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1200',
+  laptop: 'https://images.pexels.com/photos/7792771/pexels-photo-7792771.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1200',
+  charts: 'https://images.pexels.com/photos/7698796/pexels-photo-7698796.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1200',
+  board:  'https://images.pexels.com/photos/7433898/pexels-photo-7433898.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1200',
+  three:  'https://images.pexels.com/photos/7433860/pexels-photo-7433860.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=900&w=1200',
+  p1:'https://images.pexels.com/photos/6814524/pexels-photo-6814524.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=720',
+  p2:'https://images.pexels.com/photos/8101922/pexels-photo-8101922.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=720',
+  p3:'https://images.pexels.com/photos/13801510/pexels-photo-13801510.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=720',
+  p4:'https://images.pexels.com/photos/8730984/pexels-photo-8730984.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=720',
+  p5:'https://images.pexels.com/photos/7964356/pexels-photo-7964356.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=720',
+  p6:'https://images.pexels.com/photos/4345104/pexels-photo-4345104.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=720'
+};
+
+const ICONS = {
+  plan:'<path d="M3 20h18M6 20V9m5 11V4m5 16v-7m5 7V11"/>',
+  program:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 4v16M3 10h5M12 9h6M12 13h4"/>',
+  strategy:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+  invest:'<path d="M3 17 9 11l4 4 8-9"/><path d="M21 6v6h-6"/><path d="M3 21h18"/>',
+  seo:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.3-3.3M11 8v6M8 11h6"/>',
+  market:'<path d="M12 3v18M5 8l7-5 7 5v8l-7 5-7-5Z"/>'
+};
+
+const SERVICES = [
+  { n:'01', title:'Business Planning', icon:'plan', tag:'Growth',
+    text:"We develop the relationships that underpin the next phase in your organisation's growth. We do this by discerning the people.",
+    img:IMG.team, long:"A business plan is only as strong as the people behind it. We map stakeholders, align incentives and turn a 90-page deck into a one-page operating rhythm your team actually uses." },
+  { n:'02', title:'Program Management', icon:'program', tag:'Delivery',
+    text:"The development of your next business plan will be executed by a brilliant team who will indicate your grand success.",
+    img:IMG.women, long:"From portfolio governance to sprint-level delivery, we run the cadence that keeps complex programs on time, on budget and on strategy — with transparent reporting at every tier." },
+  { n:'03', title:'Strategy', icon:'strategy', tag:'Advisory',
+    text:"What separates our agency from all others is the ability to offer the most user-friendly experience, end to end.",
+    img:IMG.docs, long:"Positioning, pricing, go-to-market and the hard trade-offs in between. We pressure-test every assumption with data so the board gets conviction, not opinions." },
+  { n:'04', title:'Investment Idea', icon:'invest', tag:'Capital',
+    text:"Our investment idea services provide clients with tailored, data-driven strategies and insights.",
+    img:IMG.charts, long:"Thesis development, diligence support and portfolio construction. We quantify downside before we celebrate upside, then build the monitoring layer that protects the return." },
+  { n:'05', title:'SEO Optimization', icon:'seo', tag:'Digital',
+    text:"A blueprint for accomplishing your objectives — from first thought to measurable, compounding organic growth.",
+    img:IMG.laptop, long:"Technical foundations, topical authority and a content engine that compounds. We ship the roadmap and the team that executes it, month after month." },
+  { n:'06', title:'Market Research', icon:'market', tag:'Insight',
+    text:"Know the terrain before you move. We quantify demand, map competitors and size the opportunity precisely.",
+    img:IMG.meet, long:"Primary interviews, panel surveys and signal scraping combined into a single, decision-grade view of your market — refreshed quarterly." }
+];
+
+const TESTIMONIALS = [
+  { quote:"Consultio rebuilt our operating model in eleven weeks. Revenue per consultant is up 38% and the board finally reads one dashboard.", name:'Amelia Hartley', role:'COO, Northbridge Capital', img:IMG.p1 },
+  { quote:"The clarity they brought to our go-to-market was ruthless in the best way. We killed two products and tripled the third.", name:'Daniel Okafor', role:'Founder, Vertex Labs', img:IMG.p2 },
+  { quote:"Program governance that actually works on the ground. Delivery slippage dropped from 31% to under 4% in two quarters.", name:'Sofia Marchetti', role:'VP Delivery, Arclight', img:IMG.p3 },
+  { quote:"Their investment thesis work paid for the engagement sixteen times over. Rigorous, fast and refreshingly honest.", name:'Marcus Lindgren', role:'Partner, Helix Ventures', img:IMG.p4 },
+  { quote:"Organic pipeline is now our cheapest channel. The SEO blueprint was specific enough for our team to run alone.", name:'Priya Raman', role:'CMO, Lumen Health', img:IMG.p5 }
+];
+
+const STATS = [
+  { v:24, suf:'+', label:'Years of advisory practice' },
+  { v:1280, suf:'+', label:'Engagements delivered' },
+  { v:38, suf:'', label:'Countries served' },
+  { v:98, suf:'%', label:'Client retention rate' }
+];
+
+const svgIcon = (k, cls='') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
+
+/* =========================================================
+   RENDERERS
+   ========================================================= */
+// ---- marquee
+document.getElementById('logoMarquee').innerHTML =
+  [...Array(2)].map(()=>['Forbes','Bloomberg','McKinley','Vertex','Northbridge','Arclight','Lumen','Helix']
+    .map(n=>`<span class="px-2 whitespace-nowrap">${n}</span>`).join('')).join('');
+
+// ---- hero coverflow slides
+document.querySelector('[data-cf-stage]').innerHTML = SERVICES.map((s,i)=>`
+  <article class="cf-item w-[300px] sm:w-[340px]" data-cf-item data-i="${i}">
+    <div class="relative rounded-[26px] overflow-hidden h-[470px] sm:h-[505px] bg-[#0C1428] border border-white/10 shadow-[0_40px_80px_-30px_rgba(0,0,0,.9)]">
+      <img src="${s.img}" alt="${s.title}" class="absolute inset-0 w-full h-full object-cover opacity-55">
+      <div class="absolute inset-0 bg-gradient-to-t from-[#070B17] via-[#070B17]/55 to-transparent"></div>
+      <div class="relative h-full p-7 flex flex-col justify-between">
+        <div class="flex items-start justify-between">
+          <span class="grid place-items-center w-14 h-14 rounded-2xl bg-white/10 backdrop-blur border border-white/15 text-[#FF9D3C]">${svgIcon(s.icon,'w-7 h-7')}</span>
+          <span class="font-display text-white/25 text-3xl font-extrabold">${s.n}</span>
+        </div>
+        <div>
+          <span class="inline-block rounded-full bg-[#FF6B2C]/90 text-white text-[11px] font-bold px-3 py-1 tracking-wider uppercase">${s.tag}</span>
+          <h3 class="mt-3 font-display text-white text-2xl font-bold leading-snug">${s.title}</h3>
+          <p class="mt-2.5 text-white/60 text-sm leading-relaxed line-clamp-3">${s.text}</p>
+          <span class="mt-5 inline-flex items-center gap-2 text-[#FF9D3C] font-bold text-sm">Read more
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </article>`).join('');
+
+// ---- rail 1 : signature cards
+document.querySelector('#rail-1 [data-track]').innerHTML = SERVICES.map(s=>`
+  <div class="px-0">
+    <article class="fold group relative h-full overflow-hidden rounded-[24px] bg-white border border-[rgba(12,20,40,.07)] p-9 shadow-soft transition duration-500 hover:-translate-y-2 hover:shadow-lift">
+      <span class="absolute top-0 left-9 h-1 w-0 bg-gradient-to-r from-[#FF6B2C] to-[#FF9D3C] transition-all duration-500 group-hover:w-16"></span>
+      <div class="relative flex items-start justify-between">
+        <span class="relative grid place-items-center w-[72px] h-[72px] rounded-2xl bg-[#FFF1EA] text-[#FF6B2C] transition duration-500 group-hover:bg-gradient-to-br group-hover:from-[#FF6B2C] group-hover:to-[#FF9D3C] group-hover:text-white group-hover:rotate-6">
+          ${svgIcon(s.icon,'w-9 h-9')}
+        </span>
+        <span class="font-display text-[42px] font-extrabold text-[#0C1428]/[.06] leading-none">${s.n}</span>
+      </div>
+      <h3 class="relative mt-7 font-display text-[22px] font-bold group-hover:text-[#FF6B2C] transition">${s.title}</h3>
+      <p class="relative mt-3.5 text-[15px] leading-relaxed text-[#6A7488]">${s.text}</p>
+      <a href="#contact" class="relative mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#0C1428] group-hover:text-[#FF6B2C] transition">
+        Read more
+        <span class="grid place-items-center w-8 h-8 rounded-full bg-[#F1F3F8] group-hover:bg-[#FF6B2C] group-hover:text-white transition">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+    </article>
+  </div>`).join('');
+
+// ---- rail 2 : image slides
+document.querySelector('#rail-2 [data-track]').innerHTML = SERVICES.map((s,i)=>`
+  <div>
+    <article class="group relative overflow-hidden rounded-[26px] h-[420px] sm:h-[480px] bg-[#0C1428]">
+      <img src="${s.img}" alt="${s.title}" class="absolute inset-0 w-full h-full object-cover transition duration-[1.2s] group-hover:scale-110">
+      <div class="absolute inset-0 bg-gradient-to-t from-[#070B17] via-[#070B17]/35 to-transparent opacity-90"></div>
+      <div class="absolute inset-x-0 bottom-0 p-8">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="grid place-items-center w-12 h-12 rounded-xl bg-[#FF6B2C] text-white">${svgIcon(s.icon,'w-6 h-6')}</span>
+          <span class="text-white/55 text-xs font-bold tracking-[.2em] uppercase">Service ${s.n}</span>
+        </div>
+        <h3 class="font-display text-white text-[26px] font-bold">${s.title}</h3>
+        <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-out">
+          <div class="overflow-hidden">
+            <p class="pt-3 text-white/65 text-[15px] leading-relaxed max-w-md">${s.text}</p>
+          </div>
+        </div>
+        <a href="#contact" class="mt-5 inline-flex items-center gap-2 h-11 px-5 rounded-full bg-white/10 border border-white/15 backdrop-blur text-white text-sm font-bold hover:bg-[#FF6B2C] hover:border-[#FF6B2C] transition">
+          Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </article>
+  </div>`).join('');
+
+// ---- rail 3 : spotlight
+document.querySelector('#rail-3 [data-track]').innerHTML = SERVICES.map(s=>`
+  <div>
+    <div class="grid md:grid-cols-2">
+      <div class="relative h-[300px] md:h-[520px] overflow-hidden">
+        <img src="${s.img}" alt="${s.title}" class="absolute inset-0 w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#070B17]/70 to-transparent"></div>
+        <span class="absolute top-6 left-6 rounded-full bg-white/90 backdrop-blur px-4 py-1.5 text-xs font-bold tracking-wider uppercase text-[#0C1428]">${s.tag}</span>
+      </div>
+      <div class="p-9 sm:p-12 lg:p-14 flex flex-col justify-center">
+        <span class="grid place-items-center w-16 h-16 rounded-2xl bg-[#FFF1EA] text-[#FF6B2C] mb-7">${svgIcon(s.icon,'w-8 h-8')}</span>
+        <span class="text-[#FF6B2C] font-bold text-sm tracking-[.22em] uppercase">Service ${s.n}</span>
+        <h3 class="mt-3 font-display text-[clamp(1.7rem,2.8vw,2.4rem)] font-extrabold leading-tight">${s.title}</h3>
+        <p class="mt-5 text-[#6A7488] leading-relaxed max-w-lg">${s.long}</p>
+        <ul class="mt-7 space-y-3 text-[15px] font-medium">
+          <li class="flex items-center gap-3"><span class="grid place-items-center w-5 h-5 rounded-full bg-[#FF6B2C] text-white text-[10px]">✓</span> Dedicated senior partner on every engagement</li>
+          <li class="flex items-center gap-3"><span class="grid place-items-center w-5 h-5 rounded-full bg-[#FF6B2C] text-white text-[10px]">✓</span> Fixed scope, fixed fee, measurable outcome</li>
+        </ul>
+        <a href="#contact" class="btn-sheen mt-9 inline-flex w-fit items-center gap-2.5 h-[52px] px-7 rounded-full bg-[#0C1428] text-white font-bold hover:bg-[#FF6B2C] transition">
+          Read more <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>`).join('');
+
+// ---- rail 3 thumbnails
+document.getElementById('rail3Thumbs').innerHTML = SERVICES.map((s,i)=>`
+  <button data-thumb="${i}" class="group flex items-center gap-3 rounded-2xl border border-[rgba(12,20,40,.08)] bg-white px-4 py-3.5 text-left transition hover:-translate-y-1 hover:shadow-soft">
+    <span class="grid place-items-center w-10 h-10 rounded-xl bg-[#F1F3F8] text-[#0C1428] transition group-hover:bg-[#FF6B2C] group-hover:text-white">${svgIcon(s.icon,'w-5 h-5')}</span>
+    <span class="text-[13px] font-bold leading-tight">${s.title}</span>
+  </button>`).join('');
+
+// ---- rail 4 : testimonials
+document.querySelector('#rail-4 [data-track]').innerHTML = TESTIMONIALS.map(t=>`
+  <div>
+    <article class="h-full rounded-[26px] bg-[#F6F7FB] border border-[rgba(12,20,40,.06)] p-9 sm:p-11 transition hover:shadow-soft hover:-translate-y-1 duration-500">
+      <div class="flex items-center justify-between">
+        <div class="text-[#FF9D3C] text-lg tracking-widest">★★★★★</div>
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="#FF6B2C" opacity=".14"><path d="M7.5 5C5 5 3 7 3 9.5S5 14 7.5 14c.3 0 .6 0 .9-.1C7.8 16 6 17.5 3.8 18l.9 1.9C8.9 18.7 12 15 12 10.5 12 7 10 5 7.5 5m9.5 0c-2.5 0-4.5 2-4.5 4.5S14.5 14 17 14c.3 0 .6 0 .9-.1-.6 2.1-2.4 3.6-4.6 4.1l.9 1.9c4.2-1.2 7.3-4.9 7.3-9.4C21.5 7 19.5 5 17 5"/></svg>
+      </div>
+      <p class="mt-6 text-[18px] sm:text-[19px] leading-relaxed font-medium text-[#0C1428]">“${t.quote}”</p>
+      <div class="mt-8 pt-7 border-t border-[rgba(12,20,40,.08)] flex items-center gap-4">
+        <img src="${t.img}" alt="${t.name}" class="w-14 h-14 rounded-full object-cover">
+        <div>
+          <div class="font-display font-bold">${t.name}</div>
+          <div class="text-sm text-[#6A7488]">${t.role}</div>
+        </div>
+      </div>
+    </article>
+  </div>`).join('');
+
+// ---- stats
+document.getElementById('statGrid').innerHTML = STATS.map(s=>`
+  <div class="group relative overflow-hidden rounded-[24px] border border-[rgba(12,20,40,.07)] bg-[#F6F7FB] p-8 transition hover:bg-[#0C1428] duration-500">
+    <div class="font-display text-[clamp(2.2rem,4vw,3rem)] font-extrabold text-[#0C1428] group-hover:text-white transition">
+      <span class="counter" data-to="${s.v}">0</span>${s.suf}
+    </div>
+    <p class="mt-2 text-[#6A7488] group-hover:text-white/55 transition">${s.label}</p>
+    <span class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-[#FF6B2C]/10 group-hover:bg-[#FF6B2C]/30 transition"></span>
+  </div>`).join('');
+
+/* =========================================================
+   CAROUSEL ENGINE (hand-written, no dependencies)
+   ========================================================= */
+class Rail {
+  constructor(root){
+    this.root = root;
+    this.viewport = root.querySelector('[data-viewport]');
+    this.track = root.querySelector('[data-track]');
+    this.opts = Object.assign({ perView:{0:1}, gap:24, loop:true, autoplay:0, speed:720 },
+                              JSON.parse(root.dataset.options || '{}'));
+    this.real = Array.from(this.track.children);
+    this.count = this.real.length;
+    if(!this.count) return;
+
+    this.maxPV = Math.ceil(Math.max(...Object.values(this.opts.perView)));
+    this.loop = this.opts.loop && this.count > this.maxPV;
+    this.cloneCount = this.loop ? this.maxPV : 0;
+
+    if(this.loop){
+      const head = this.real.slice(0, this.cloneCount).map(n=>n.cloneNode(true));
+      const tail = this.real.slice(-this.cloneCount).map(n=>n.cloneNode(true));
+      tail.forEach(n=>{ n.setAttribute('aria-hidden','true'); this.track.insertBefore(n, this.track.firstChild); });
+      head.forEach(n=>{ n.setAttribute('aria-hidden','true'); this.track.appendChild(n); });
+    }
+    this.slides = Array.from(this.track.children);
+    this.pos = this.cloneCount;
+
+    this.buildDots();
+    this.bind();
+    this.measure();
+    this.apply(false);
+    this.startAuto();
+  }
+
+  pv(){
+    const w = window.innerWidth;
+    let best = 1;
+    Object.keys(this.opts.perView).map(Number).sort((a,b)=>a-b)
+      .forEach(bp=>{ if(w >= bp) best = this.opts.perView[bp]; });
+    return best;
+  }
+
+  measure(){
+    const pv = this.pv();
+    const gap = this.opts.gap;
+    const vw = this.viewport.clientWidth;
+    this.slideW = (vw - gap * (Math.ceil(pv) - 1)) / pv;
+    this.step = this.slideW + gap;
+    this.track.style.gap = gap + 'px';
+    this.slides.forEach(s=>{ s.style.width = this.slideW + 'px'; });
+    this.maxPos = this.loop ? Infinity : Math.max(0, this.count - Math.floor(pv));
+    this.apply(false);
+  }
+
+  apply(animate = true){
+    this.track.style.transition = animate ? `transform ${this.opts.speed}ms cubic-bezier(.19,1,.22,1)` : 'none';
+    this.track.style.transform = `translate3d(${-this.pos * this.step}px,0,0)`;
+    if(!animate) this.track.getBoundingClientRect();
+    this.syncDots();
+  }
+
+  realIndex(){
+    return ((this.pos - this.cloneCount) % this.count + this.count) % this.count;
+  }
+
+  go(p, animate = true){
+    if(!this.loop) p = Math.max(0, Math.min(p, this.maxPos));
+    this.pos = p;
+    this.apply(animate);
+    this.restartAuto();
+  }
+  next(){ this.go(this.pos + 1); }
+  prev(){ this.go(this.pos - 1); }
+  goReal(i){ this.go(this.cloneCount + i); }
+
+  normalize(){
+    if(!this.loop) return;
+    let p = this.pos;
+    if(p >= this.cloneCount + this.count) p -= this.count;
+    else if(p < this.cloneCount) p += this.count;
+    if(p !== this.pos){ this.pos = p; this.apply(false); }
+  }
+
+  buildDots(){
+    this.dotsWrap = this.root.querySelector('[data-dots]');
+    if(!this.dotsWrap) return;
+    const light = this.root.closest('.bg-\\[\\#070B17\\]') || this.root.dataset.dotsLight;
+    this.dotsWrap.innerHTML = this.real.map((_,i)=>
+      `<button class="dot ${light?'light':''}" data-dot="${i}" aria-label="Go to slide ${i+1}"></button>`).join('');
+    this.dotsWrap.addEventListener('click', e=>{
+      const b = e.target.closest('[data-dot]');
+      if(b) this.goReal(+b.dataset.dot);
+    });
+  }
+  syncDots(){
+    if(!this.dotsWrap) return;
+    const i = this.realIndex();
+    this.dotsWrap.querySelectorAll('[data-dot]').forEach((d,k)=>d.classList.toggle('is-active', k === i));
+  }
+
+  /* ---- autoplay with progress bar ---- */
+  startAuto(){
+    this.progress = this.root.querySelector('[data-progress]');
+    if(!this.opts.autoplay) return;
+    this.autoStart = performance.now();
+    this.paused = false;
+    const tick = now =>{
+      this.raf = requestAnimationFrame(tick);
+      if(this.paused || this.dragging){ this.autoStart = now - this.elapsed; return; }
+      this.elapsed = now - this.autoStart;
+      const pct = Math.min(1, this.elapsed / this.opts.autoplay);
+      if(this.progress) this.progress.style.width = (pct * 100) + '%';
+      if(pct >= 1){ this.autoStart = now; this.elapsed = 0; this.go(this.pos + 1); }
+    };
+    this.elapsed = 0;
+    this.raf = requestAnimationFrame(tick);
+  }
+  restartAuto(){ this.autoStart = performance.now(); this.elapsed = 0; if(this.progress) this.progress.style.width = '0%'; }
+
+  bind(){
+    this.track.addEventListener('transitionend', ()=>this.normalize());
+
+    const navScopes = [this.root, document.querySelector(`[data-rail-nav="${this.root.id}"]`),
+                       ...document.querySelectorAll(`[data-rail-nav-for="${this.root.id}"]`)].filter(Boolean);
+    navScopes.forEach(scope=>{
+      scope.querySelectorAll('[data-prev]').forEach(b=>b.addEventListener('click', ()=>this.prev()));
+      scope.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click', ()=>this.next()));
+      if(scope.matches('[data-prev]')) scope.addEventListener('click', ()=>this.prev());
+      if(scope.matches('[data-next]')) scope.addEventListener('click', ()=>this.next());
+    });
+
+    this.root.addEventListener('mouseenter', ()=>this.paused = true);
+    this.root.addEventListener('mouseleave', ()=>this.paused = false);
+
+    // pointer drag
+    let startX = 0, startPos = 0, dx = 0, active = false, startY = 0, locked = null;
+    const down = e =>{
+      active = true; this.dragging = true; locked = null; dx = 0;
+      startX = e.clientX ?? e.touches[0].clientX;
+      startY = e.clientY ?? e.touches[0].clientY;
+      startPos = this.pos;
+      this.viewport.classList.add('is-dragging');
+      this.track.style.transition = 'none';
+    };
+    const move = e =>{
+      if(!active) return;
+      const x = e.clientX ?? e.touches[0].clientX;
+      const y = e.clientY ?? e.touches[0].clientY;
+      if(locked === null){
+        const ax = Math.abs(x - startX), ay = Math.abs(y - startY);
+        if(ax < 5 && ay < 5) return;              // wait for a meaningful gesture
+        locked = ax >= ay ? 'x' : 'y';
+        if(locked === 'y'){ active = false; this.dragging = false; this.viewport.classList.remove('is-dragging'); return; }
+      }
+      dx = x - startX;
+      if(e.cancelable) e.preventDefault();
+      this.track.style.transform = `translate3d(${-startPos * this.step + dx}px,0,0)`;
+    };
+    const up = ()=>{
+      if(!active) return;
+      active = false; this.dragging = false;
+      this.viewport.classList.remove('is-dragging');
+      let moved = Math.round(-dx / this.step);
+      if(moved === 0 && Math.abs(dx) > this.step * 0.14) moved = dx < 0 ? 1 : -1;
+      this.go(startPos + moved);
+      if(Math.abs(dx) > 6){
+        this.viewport.querySelectorAll('a').forEach(a=>{
+          const block = ev=>{ ev.preventDefault(); a.removeEventListener('click', block, true); };
+          a.addEventListener('click', block, true);
+          setTimeout(()=>a.removeEventListener('click', block, true), 120);
+        });
+      }
+    };
+    this.viewport.addEventListener('pointerdown', down);
+    window.addEventListener('pointermove', move, { passive:false });
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+    this.viewport.addEventListener('dragstart', e=>e.preventDefault());
+
+    // keyboard
+    this.root.tabIndex = 0;
+    this.root.addEventListener('keydown', e=>{
+      if(e.key === 'ArrowLeft') this.prev();
+      if(e.key === 'ArrowRight') this.next();
+    });
+
+    let t; window.addEventListener('resize', ()=>{ clearTimeout(t); t = setTimeout(()=>this.measure(), 140); });
+  }
+}
+
+const RAILS = {};
+document.querySelectorAll('[data-rail]').forEach(el=>{ RAILS[el.id] = new Rail(el); });
+
+// thumbnails -> rail 3
+document.getElementById('rail3Thumbs').addEventListener('click', e=>{
+  const b = e.target.closest('[data-thumb]');
+  if(!b) return;
+  RAILS['rail-3'].goReal(+b.dataset.thumb);
+  syncThumbs(+b.dataset.thumb);
+});
+function syncThumbs(i){
+  document.querySelectorAll('#rail3Thumbs [data-thumb]').forEach((b,k)=>{
+    b.classList.toggle('thumb-active', k === i);
+  });
+}
+syncThumbs(0);
+// keep thumbs in sync with autoplay
+setInterval(()=>{ if(RAILS['rail-3']) syncThumbs(RAILS['rail-3'].realIndex()); }, 300);
+
+/* =========================================================
+   3D COVERFLOW
+   ========================================================= */
+class Coverflow {
+  constructor(root){
+    this.root = root;
+    this.stage = root.querySelector('[data-cf-stage]');
+    this.items = Array.from(root.querySelectorAll('[data-cf-item]'));
+    this.n = this.items.length;
+    this.i = 0;
+    this.dots = root.querySelector('[data-cf-dots]');
+    this.dots.innerHTML = this.items.map((_,k)=>`<button class="dot light" data-cfdot="${k}" aria-label="Slide ${k+1}"></button>`).join('');
+    root.querySelector('[data-cf-total]').textContent = String(this.n).padStart(2,'0');
+    this.render();
+    this.bind();
+    this.auto();
+  }
+  render(){
+    const w = this.items[0].offsetWidth || 320;
+    const shift = Math.min(w * 0.62, window.innerWidth < 640 ? 120 : 210);
+    this.items.forEach((el,k)=>{
+      let d = k - this.i;
+      if(d > this.n/2) d -= this.n;
+      if(d < -this.n/2) d += this.n;
+      const abs = Math.abs(d);
+      const visible = abs <= 2;
+      el.style.transform = `translateX(calc(-50% + ${d*shift}px)) translateZ(${-abs*170}px) rotateY(${d*-22}deg) scale(${1 - abs*0.07})`;
+      el.style.opacity = visible ? (abs === 0 ? 1 : abs === 1 ? .62 : .25) : 0;
+      el.style.filter = abs === 0 ? 'none' : `blur(${abs*1.2}px)`;
+      el.style.zIndex = 50 - abs;
+      el.style.pointerEvents = abs === 0 ? 'auto' : 'none';
+    });
+    this.root.querySelector('[data-cf-current]').textContent = String(this.i+1).padStart(2,'0');
+    this.dots.querySelectorAll('[data-cfdot]').forEach((d,k)=>d.classList.toggle('is-active', k === this.i));
+  }
+  go(i){ this.i = (i % this.n + this.n) % this.n; this.render(); this.t0 = performance.now(); }
+  next(){ this.go(this.i+1); } prev(){ this.go(this.i-1); }
+  auto(){
+    this.t0 = performance.now();
+    const loop = now =>{
+      requestAnimationFrame(loop);
+      if(this.hover || document.hidden){ this.t0 = now; return; }
+      if(now - this.t0 > 4200){ this.t0 = now; this.next(); }
+    };
+    requestAnimationFrame(loop);
+  }
+  bind(){
+    this.root.querySelector('[data-cf-next]').addEventListener('click', ()=>this.next());
+    this.root.querySelector('[data-cf-prev]').addEventListener('click', ()=>this.prev());
+    this.dots.addEventListener('click', e=>{ const b = e.target.closest('[data-cfdot]'); if(b) this.go(+b.dataset.cfdot); });
+    this.root.addEventListener('mouseenter', ()=>this.hover = true);
+    this.root.addEventListener('mouseleave', ()=>this.hover = false);
+    let sx = null, sy = null;
+    this.stage.addEventListener('pointerdown', e=>{ sx = e.clientX; sy = e.clientY; });
+    window.addEventListener('pointerup', e=>{
+      if(sx === null) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if(Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) dx < 0 ? this.next() : this.prev();
+      sx = null;
+    });
+    window.addEventListener('resize', ()=>this.render());
+  }
+}
+new Coverflow(document.getElementById('coverflow'));
+
+/* =========================================================
+   UI: header, reveal, counters, drawer, misc
+   ========================================================= */
+const header = document.getElementById('headerInner');
+const navInk = document.querySelectorAll('.nav-ink');
+const onScroll = ()=>{
+  const y = window.scrollY;
+  const solid = y > 70;
+  header.classList.toggle('hdr-solid', solid);
+  const h = document.documentElement;
+  document.getElementById('scrollProgress').style.width = (y / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  const top = document.getElementById('toTop');
+  top.classList.toggle('opacity-0', y < 600);
+  top.classList.toggle('translate-y-4', y < 600);
+  top.classList.toggle('pointer-events-none', y < 600);
+};
+window.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('revealed'); io.unobserve(e.target); }
+  });
+}, { threshold:.12, rootMargin:'0px 0px -60px' });
+document.querySelectorAll('[data-reveal]').forEach((el,i)=>{ el.style.transitionDelay = (i%3)*90 + 'ms'; io.observe(el); });
+
+const cio = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el = e.target, to = +el.dataset.to, dur = 1600, t0 = performance.now();
+    const step = now =>{
+      const p = Math.min(1, (now - t0)/dur);
+      el.textContent = Math.round(to * (1 - Math.pow(1-p, 3))).toLocaleString();
+      if(p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step); cio.unobserve(el);
+  });
+}, { threshold:.5 });
+document.querySelectorAll('.counter').forEach(el=>cio.observe(el));
+
+// drawer
+const drawer = document.getElementById('drawer'), panel = document.getElementById('drawerPanel');
+document.getElementById('burger').addEventListener('click', ()=>{
+  drawer.classList.remove('hidden');
+  requestAnimationFrame(()=>panel.classList.remove('translate-x-full'));
+  document.body.style.overflow = 'hidden';
+});
+drawer.addEventListener('click', e=>{
+  if(!e.target.closest('[data-close]')) return;
+  panel.classList.add('translate-x-full');
+  document.body.style.overflow = '';
+  setTimeout(()=>drawer.classList.add('hidden'), 450);
+});
+
+// newsletter
+document.getElementById('newsletterForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const note = document.getElementById('formNote');
+  note.textContent = '✓ Thanks! Your tailored roadmap is on the way.';
+  note.className = 'mt-3 text-[#FF9D3C] text-sm pl-2 font-semibold';
+  e.target.reset();
+});
+</script>
+</body>
+</html>
