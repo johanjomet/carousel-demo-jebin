@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CONSULTIO® — Good Advice In Motion | Service Carousel, Reimagined</title>
+<meta name="description" content="Consultio — business consulting from Melbourne. Business Planning, Program Management, Strategy, Investment Ideas & SEO Optimization, presented as a kinetic gallery." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+  :root{
+    --bone:#EAE6DC; --bone2:#F4F1E8; --ink:#12130E; --ink2:#1B1D15;
+    --lime:#C9F24E; --lime2:#AEE22E; --smoke:#76786B; --line:rgba(18,19,14,.16);
+  }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:'Inter',system-ui,sans-serif; background:var(--bone); color:var(--ink); overflow-x:hidden; }
+  .font-disp{ font-family:'Space Grotesk',sans-serif; }
+  .serif-it{ font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; }
+  ::selection{ background:var(--ink); color:var(--lime); }
+  ::-webkit-scrollbar{ width:10px; } ::-webkit-scrollbar-track{ background:var(--bone); }
+  ::-webkit-scrollbar-thumb{ background:var(--ink); border-radius:99px; border:2px solid var(--bone); }
+
+  /* film grain */
+  .grain{ position:fixed; inset:-50%; width:200%; height:200%; pointer-events:none; z-index:80; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain 8s steps(10) infinite; }
+  @keyframes grain{ 0%,100%{transform:translate(0,0)} 20%{transform:translate(-3%,2%)} 40%{transform:translate(2%,-3%)} 60%{transform:translate(-2%,-2%)} 80%{transform:translate(3%,3%)} }
+
+  /* preloader */
+  #loader{ position:fixed; inset:0; z-index:200; background:var(--ink); color:var(--bone); display:flex; flex-direction:column; justify-content:space-between; padding:28px; transition:transform .9s cubic-bezier(.76,0,.24,1); }
+  #loader.done{ transform:translateY(-101%); }
+  #loader .bar{ height:2px; background:rgba(234,230,220,.15); } #loader .bar i{ display:block; height:100%; width:0%; background:var(--lime); }
+
+  /* hero title lines */
+  .line-mask{ overflow:hidden; display:block; }
+  .line-mask > span{ display:block; transform:translateY(110%); }
+  body.loaded .line-mask > span{ transform:translateY(0); transition:transform 1.1s cubic-bezier(.19,1,.22,1); }
+  body.loaded .d1 > span{ transition-delay:.05s } body.loaded .d2 > span{ transition-delay:.16s } body.loaded .d3 > span{ transition-delay:.27s }
+
+  /* reveal on scroll */
+  .rv{ opacity:0; transform:translateY(30px); }
+  .rv.in{ opacity:1; transform:none; transition:opacity .9s ease,transform .9s cubic-bezier(.19,1,.22,1); }
+
+  /* rotating badge */
+  @keyframes spin{ to{ transform:rotate(360deg) } }
+  .spin-slow{ animation:spin 16s linear infinite; }
+
+  /* marquee */
+  .marquee{ display:flex; width:max-content; animation:mq 30s linear infinite; }
+  .marquee.fast{ animation-duration:20s; }
+  @keyframes mq{ to{ transform:translateX(-50%) } }
+  .marquee-wrap:hover .marquee{ animation-play-state:paused; }
+
+  /* hero carousel */
+  .hero-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transform:scale(1.07); transition:opacity 1s ease,transform 1.4s cubic-bezier(.19,1,.22,1); }
+  .hero-img.on{ opacity:1; transform:scale(1); }
+  @keyframes riseIn{ from{ opacity:0; transform:translateY(26px) } to{ opacity:1; transform:none } }
+  .rise{ animation:riseIn .7s cubic-bezier(.19,1,.22,1) both; }
+  .seg{ position:relative; height:4px; flex:1; background:rgba(18,19,14,.15); overflow:hidden; cursor:pointer; }
+  .seg i{ position:absolute; inset:0; width:0%; background:var(--ink); display:block; }
+  .seg.done i{ width:100%; }
+  .seg.light{ background:rgba(234,230,220,.2); } .seg.light i{ background:var(--lime); }
+
+  .btn-arrow{ width:58px; height:58px; display:grid; place-items:center; border:1.5px solid var(--ink); border-radius:999px; transition:.35s; background:transparent; }
+  .btn-arrow:hover{ background:var(--ink); color:var(--lime); transform:rotate(-8deg); }
+  .btn-arrow.on-dark{ border-color:rgba(234,230,220,.4); color:var(--bone); }
+  .btn-arrow.on-dark:hover{ background:var(--lime); color:var(--ink); border-color:var(--lime); }
+
+  /* index list */
+  .idx-row{ transition:background .45s ease,color .45s ease; cursor:pointer; }
+  .idx-row .idx-desc{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .55s cubic-bezier(.19,1,.22,1); }
+  .idx-row .idx-desc > div{ overflow:hidden; }
+  .idx-row.active{ background:var(--ink); color:var(--bone); }
+  .idx-row.active .idx-desc{ grid-template-rows:1fr; }
+  .idx-row.active .idx-arrow{ background:var(--lime); color:var(--ink); transform:rotate(45deg); border-color:var(--lime); }
+  .idx-row.active .idx-tag{ color:var(--lime); border-color:rgba(201,242,78,.4); }
+  .idx-arrow{ transition:.45s cubic-bezier(.19,1,.22,1); }
+  #indexImg{ transition:opacity .35s ease,transform .8s cubic-bezier(.19,1,.22,1); }
+  #indexImg.fading{ opacity:0; transform:scale(1.05); }
+
+  /* drag filmstrip */
+  #dragViewport{ cursor:grab; } #dragViewport.grabbing{ cursor:grabbing; }
+  #dragTrack{ will-change:transform; }
+  .gcard img{ will-change:transform; }
+
+  /* deck */
+  .deck-card{ position:absolute; left:50%; top:50%; width:min(400px,86vw); transition:transform .55s cubic-bezier(.19,1,.22,1),opacity .45s ease; touch-action:pan-y; }
+  .deck-card.toss-l{ transform:translate(-190%,-55%) rotate(-20deg)!important; opacity:0; }
+  .deck-card.toss-r{ transform:translate(90%,-55%) rotate(20deg)!important; opacity:0; }
+
+  /* voices */
+  .voice{ position:absolute; inset:0; opacity:0; transform:translateY(18px); transition:opacity .7s ease,transform .7s cubic-bezier(.19,1,.22,1); pointer-events:none; }
+  .voice.on{ opacity:1; transform:none; pointer-events:auto; }
+
+  /* cursor */
+  #cursorDot,#cursorRing{ position:fixed; top:0; left:0; pointer-events:none; z-index:120; border-radius:999px; }
+  #cursorDot{ width:8px; height:8px; background:var(--lime); mix-blend-mode:difference; }
+  #cursorRing{ width:38px; height:38px; border:1.5px solid rgba(18,19,14,.55); transition:width .3s,height .3s,background .3s,border-color .3s; }
+  #cursorRing.big{ width:74px; height:74px; background:rgba(201,242,78,.9); border-color:transparent; }
+  #cursorRing .clabel{ opacity:0; font-size:10px; font-weight:700; letter-spacing:.14em; }
+  #cursorRing.big .clabel{ opacity:1; }
+  @media (pointer:coarse){ #cursorDot,#cursorRing{ display:none } }
+
+  .outline-word{ color:transparent; -webkit-text-stroke:1.5px rgba(234,230,220,.28); }
+  .link-line{ position:relative; }
+  .link-line:after{ content:""; position:absolute; left:0; bottom:-3px; height:1.5px; width:100%; background:currentColor; transform:scaleX(0); transform-origin:right; transition:transform .45s cubic-bezier(.19,1,.22,1); }
+  .link-line:hover:after{ transform:scaleX(1); transform-origin:left; }
+  input:focus{ outline:none; }
+  @media (prefers-reduced-motion:reduce){ *{ animation:none!important; transition-duration:.01ms!important } }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- grain / cursor / progress -->
+<div class="grain"></div>
+<div id="cursorDot"></div>
+<div id="cursorRing" class="grid place-items-center"><span class="clabel font-disp">VIEW</span></div>
+<div class="fixed top-0 left-0 right-0 h-[3px] z-[110]"><div id="scrollbarFill" class="h-full w-0 bg-[#12130E]"></div></div>
+
+<!-- ================= PRELOADER ================= -->
+<div id="loader">
+  <div class="flex justify-between font-disp text-xs tracking-[.25em] uppercase text-[#EAE6DC]/60">
+    <span>Consultio® — Melbourne</span><span>Service Carousel</span>
+  </div>
+  <div class="text-center">
+    <div class="font-disp font-bold uppercase leading-none text-[clamp(3rem,10vw,7rem)]">Good <span class="serif-it normal-case text-[#C9F24E]">advice</span></div>
+    <div class="mt-6 font-disp text-sm tracking-[.3em] uppercase text-[#EAE6DC]/50">Loading the gallery — <span id="loadPct" class="text-[#C9F24E]">0%</span></div>
+  </div>
+  <div class="bar"><i id="loadBar"></i></div>
+</div>
+
+<!-- ================= HEADER ================= -->
+<header class="fixed top-0 inset-x-0 z-[90]">
+  <div class="mx-auto max-w-[1440px] px-5 sm:px-8">
+    <div class="mt-4 flex items-center justify-between gap-4 rounded-full border border-[#12130E]/15 bg-[#EAE6DC]/85 backdrop-blur-md pl-3 pr-2 py-2">
+      <a href="#top" class="flex items-center gap-3" data-hover>
+        <span class="grid place-items-center w-10 h-10 rounded-full bg-[#12130E] text-[#C9F24E] font-disp font-bold text-lg">C</span>
+        <span class="font-disp font-bold tracking-tight text-[19px]">CONSULTIO<sup class="text-[10px] align-super">®</sup></span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-8 font-disp text-[13px] font-semibold tracking-[.14em] uppercase">
+        <a href="#index" class="link-line">The Index</a>
+        <a href="#gallery" class="link-line">Filmstrip</a>
+        <a href="#deck" class="link-line">The Deck</a>
+        <a href="#voices" class="link-line">Voices</a>
+        <a href="#contact" class="link-line">Contact</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <span class="hidden md:flex items-center gap-2 font-disp text-xs tracking-widest text-[#76786B]">
+          MEL <span class="w-1.5 h-1.5 rounded-full bg-[#AEE22E] animate-pulse"></span> <span id="clock">--:--</span>
+        </span>
+        <a href="#contact" data-hover class="mag hidden sm:inline-flex items-center gap-2 rounded-full bg-[#12130E] text-[#EAE6DC] font-disp text-[13px] font-semibold tracking-wide px-5 h-11 hover:bg-[#1B1D15] transition">
+          Start a project
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C9F24E" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+        <button id="menuBtn" class="lg:hidden grid place-items-center w-11 h-11 rounded-full border border-[#12130E]/25" aria-label="Menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- mobile menu -->
+<div id="mobileMenu" class="fixed inset-0 z-[95] bg-[#12130E] text-[#EAE6DC] hidden">
+  <div class="h-full flex flex-col p-7">
+    <div class="flex justify-between items-center">
+      <span class="font-disp font-bold text-xl">CONSULTIO<sup class="text-[10px]">®</sup></span>
+      <button id="menuClose" class="grid place-items-center w-11 h-11 rounded-full border border-white/25" aria-label="Close">✕</button>
+    </div>
+    <nav class="flex-1 flex flex-col justify-center gap-2 font-disp font-bold uppercase text-5xl">
+      <a href="#index" class="menu-link py-2 hover:text-[#C9F24E] transition">Index</a>
+      <a href="#gallery" class="menu-link py-2 hover:text-[#C9F24E] transition">Filmstrip</a>
+      <a href="#deck" class="menu-link py-2 hover:text-[#C9F24E] transition">The Deck</a>
+      <a href="#voices" class="menu-link py-2 hover:text-[#C9F24E] transition">Voices</a>
+      <a href="#contact" class="menu-link py-2 hover:text-[#C9F24E] transition">Contact</a>
+    </nav>
+    <div class="text-white/50 text-sm flex justify-between"><span>info@consultio.com</span><span>(210) 123-451</span></div>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- ================= HERO ================= -->
+<section class="relative pt-[130px] sm:pt-[150px]">
+  <div class="mx-auto max-w-[1440px] px-5 sm:px-8">
+    <!-- meta strip -->
+    <div class="flex flex-wrap gap-x-8 gap-y-2 justify-between border-y border-[#12130E]/15 py-3 font-disp text-[11px] sm:text-xs font-semibold tracking-[.22em] uppercase text-[#76786B]">
+      <span>Business Consulting — Est. 2004</span>
+      <span class="hidden md:inline">380 St Kilda Road, Melbourne</span>
+      <span>Sat – Thu · (210) 123-451</span>
+    </div>
+
+    <!-- giant title -->
+    <div class="relative mt-10 sm:mt-14">
+      <h1 class="font-disp font-bold uppercase leading-[.92] tracking-tight text-[clamp(3.4rem,11.5vw,10.5rem)]">
+        <span class="line-mask d1"><span>Good</span></span>
+        <span class="line-mask d2"><span class="serif-it normal-case font-normal text-[clamp(3.6rem,12vw,11rem)]">advice,</span></span>
+        <span class="line-mask d3"><span>in motion<sup class="text-[.35em] align-super">®</sup></span></span>
+      </h1>
+
+      <!-- rotating badge -->
+      <div class="absolute right-2 top-2 hidden md:block">
+        <div class="relative w-[132px] h-[132px]">
+          <svg class="spin-slow w-full h-full" viewBox="0 0 100 100">
+            <defs><path id="circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+            <text class="font-disp" fill="#12130E" font-size="8.2" letter-spacing="2.5"><textPath href="#circ">SERVICE CAROUSEL • CONSULTIO • SINCE 2004 • </textPath></text>
+          </svg>
+          <span class="absolute inset-0 grid place-items-center">
+            <span class="grid place-items-center w-12 h-12 rounded-full bg-[#C9F24E] border border-[#12130E]/20">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#12130E" stroke-width="2.4" stroke-linecap="round"><path d="M12 4v16m0 0 6-6m-6 6-6-6"/></svg>
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <p class="max-w-md text-[16px] leading-relaxed text-[#55584C]">
+          Not another row of identical cards. This is our service catalogue as a
+          <em class="serif-it text-[#12130E] text-lg">kinetic gallery</em> — four ways to browse, drag, shuffle and explore what we do.
+        </p>
+        <div class="flex gap-10 font-disp">
+          <div><div class="text-3xl font-bold"><span class="counter" data-to="20">0</span>+</div><div class="text-[11px] tracking-[.18em] uppercase text-[#76786B] mt-1">Years advising</div></div>
+          <div><div class="text-3xl font-bold"><span class="counter" data-to="640">0</span>+</div><div class="text-[11px] tracking-[.18em] uppercase text-[#76786B] mt-1">Clients moved</div></div>
+          <div><div class="text-3xl font-bold">06</div><div class="text-[11px] tracking-[.18em] uppercase text-[#76786B] mt-1">Services below</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== CAROUSEL Nº1 — CINEMATIC HERO SLIDER ========== -->
+  <div class="mx-auto max-w-[1440px] px-5 sm:px-8 mt-12 sm:mt-16">
+    <div id="heroCarousel" class="rv relative border-2 border-[#12130E] bg-[#F4F1E8]">
+      <div class="grid lg:grid-cols-12">
+        <!-- copy side -->
+        <div class="lg:col-span-5 p-7 sm:p-10 lg:p-12 flex flex-col justify-between min-h-[420px] order-2 lg:order-1">
+          <div id="heroText">
+            <div class="flex items-center gap-3">
+              <span id="heroTag" class="font-disp text-[11px] font-bold tracking-[.2em] uppercase border border-[#12130E]/25 rounded-full px-3.5 py-1.5">Growth</span>
+              <span class="font-disp text-[11px] tracking-[.2em] uppercase text-[#76786B]">Carousel Nº1 — Autoplay</span>
+            </div>
+            <div class="mt-8 flex items-start gap-4">
+              <span id="heroNum" class="font-disp font-bold text-lg border-b-2 border-[#C9F24E] pb-1">01</span>
+              <h2 id="heroTitle" class="font-disp font-bold uppercase leading-[1.02] text-[clamp(1.9rem,3.6vw,3rem)]">Business Planning</h2>
+            </div>
+            <p id="heroDesc" class="mt-5 text-[#55584C] leading-relaxed max-w-md">We develop the relationships that underpin the next phase in your organisation's growth. We do this by discerning the people.</p>
+            <div id="heroChips" class="mt-6 flex flex-wrap gap-2"></div>
+          </div>
+          <div class="mt-10 flex items-center gap-5">
+            <a href="#contact" data-hover class="mag inline-flex items-center gap-2.5 rounded-full bg-[#12130E] text-[#EAE6DC] font-disp font-semibold text-sm px-7 h-[52px] hover:bg-[#1B1D15] transition">
+              Explore service
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C9F24E" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </a>
+            <button id="heroPause" data-hover class="font-disp text-xs font-bold tracking-[.18em] uppercase link-line">Pause</button>
+          </div>
+        </div>
+
+        <!-- media side -->
+        <div class="lg:col-span-7 relative h-[340px] sm:h-[440px] lg:h-auto overflow-hidden order-1 lg:order-2 border-b-2 lg:border-b-0 lg:border-l-2 border-[#12130E]" id="heroMedia" data-hover>
+          <div id="heroImgs" class="absolute inset-0"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#12130E]/45 via-transparent to-transparent pointer-events-none"></div>
+          <div class="absolute bottom-0 inset-x-0 flex items-end justify-between p-6 sm:p-8 pointer-events-none">
+            <div class="text-[#EAE6DC]">
+              <div class="font-disp text-[11px] tracking-[.25em] uppercase text-[#EAE6DC]/70">Now showing</div>
+              <div id="heroCaption" class="font-disp font-semibold text-lg mt-1">Business Planning — Growth practice</div>
+            </div>
+            <div class="font-disp text-[#EAE6DC]/80 text-sm"><span id="heroCur" class="text-[#C9F24E] font-bold text-xl">01</span> / 06</div>
+          </div>
+          <span id="heroGhost" class="absolute -top-4 right-4 font-disp font-bold text-[9rem] leading-none text-white/15 select-none pointer-events-none">01</span>
+        </div>
+      </div>
+
+      <!-- control bar -->
+      <div class="border-t-2 border-[#12130E] flex items-center gap-5 sm:gap-8 px-5 sm:px-8 py-5">
+        <div class="flex items-center gap-3 shrink-0">
+          <button id="heroPrev" class="btn-arrow" data-hover aria-label="Previous">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+          </button>
+          <button id="heroNext" class="btn-arrow" data-hover aria-label="Next">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </button>
+        </div>
+        <div id="heroSegs" class="flex items-center gap-2 flex-1"></div>
+        <span class="hidden sm:block font-disp text-[11px] font-bold tracking-[.2em] uppercase text-[#76786B] shrink-0">Drag image · ← → keys</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MARQUEE ================= -->
+<div class="marquee-wrap mt-16 sm:mt-20 bg-[#12130E] text-[#EAE6DC] py-4 overflow-hidden -rotate-1 scale-[1.02]">
+  <div class="marquee font-disp font-bold uppercase tracking-wide text-lg sm:text-xl" id="mq1"></div>
+</div>
+
+<!-- ========== CAROUSEL Nº2 — THE INDEX (LIST + PREVIEW) ========== -->
+<section id="index" class="mx-auto max-w-[1440px] px-5 sm:px-8 pt-24 sm:pt-32">
+  <div class="flex flex-wrap items-end justify-between gap-6 rv">
+    <div>
+      <div class="font-disp text-xs font-bold tracking-[.25em] uppercase text-[#76786B]">Carousel Nº2 — The Index</div>
+      <h2 class="mt-4 font-disp font-bold uppercase leading-[.95] text-[clamp(2.4rem,6vw,4.6rem)]">Every service,<br><span class="serif-it normal-case font-normal">on one spread.</span></h2>
+    </div>
+    <p class="max-w-sm text-[#55584C] leading-relaxed">Hover or tap a line. The spread on the right re-composes itself around your choice — no page reloads, no hunting.</p>
+  </div>
+
+  <div class="mt-12 grid lg:grid-cols-12 gap-6 items-start">
+    <!-- list -->
+    <div class="lg:col-span-7 border-t-2 border-[#12130E] rv" id="indexList"></div>
+
+    <!-- preview -->
+    <div class="lg:col-span-5 lg:sticky lg:top-28 rv">
+      <div class="relative border-2 border-[#12130E] bg-[#12130E] overflow-hidden">
+        <div class="relative h-[380px] sm:h-[440px] overflow-hidden">
+          <img id="indexImg" src="" alt="" class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-[#12130E]/85 via-[#12130E]/10 to-transparent"></div>
+          <span id="indexGhost" class="absolute top-4 right-5 font-disp font-bold text-7xl text-white/20">01</span>
+          <div class="absolute bottom-0 inset-x-0 p-7 text-[#EAE6DC]">
+            <span id="indexTag" class="font-disp text-[11px] font-bold tracking-[.2em] uppercase text-[#C9F24E]">Growth</span>
+            <h3 id="indexTitle" class="font-disp font-bold uppercase text-3xl mt-2">Business Planning</h3>
+            <p id="indexDesc" class="mt-2.5 text-[#EAE6DC]/70 text-[15px] leading-relaxed max-w-md"></p>
+          </div>
+        </div>
+        <div class="flex items-center justify-between px-6 py-4 border-t border-white/10">
+          <div id="indexDots" class="flex gap-2"></div>
+          <div class="flex gap-2.5">
+            <button id="indexPrev" class="btn-arrow on-dark !w-11 !h-11" data-hover aria-label="Previous" style="width:44px;height:44px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+            </button>
+            <button id="indexNext" class="btn-arrow on-dark !w-11 !h-11" data-hover aria-label="Next" style="width:44px;height:44px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <p class="mt-4 font-disp text-[11px] tracking-[.2em] uppercase text-[#76786B]">Auto-cycles when idle · Sticky preview on desktop</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CAROUSEL Nº3 — DRAG FILMSTRIP (DARK) ========== -->
+<section id="gallery" class="mt-24 sm:mt-32 bg-[#12130E] text-[#EAE6DC] py-24 sm:py-28 overflow-hidden relative">
+  <div class="mx-auto max-w-[1440px] px-5 sm:px-8">
+    <div class="flex flex-wrap items-end justify-between gap-6 rv">
+      <div>
+        <div class="font-disp text-xs font-bold tracking-[.25em] uppercase text-[#C9F24E]">Carousel Nº3 — The Filmstrip</div>
+        <h2 class="mt-4 font-disp font-bold uppercase leading-[.95] text-[clamp(2.4rem,6vw,4.6rem)]">Drag the <span class="serif-it normal-case font-normal text-[#C9F24E]">filmstrip.</span></h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="font-disp text-[11px] font-bold tracking-[.22em] uppercase border border-white/25 rounded-full px-4 py-2">← Grab &amp; throw →</span>
+        <button id="dragPrev" class="btn-arrow on-dark" data-hover aria-label="Nudge left"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+        <button id="dragNext" class="btn-arrow on-dark" data-hover aria-label="Nudge right"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="dragViewport" class="mt-14 overflow-hidden select-none rv" data-hover>
+    <div id="dragTrack" class="flex gap-5 px-5 sm:px-8 w-max items-start"></div>
+  </div>
+
+  <div class="mx-auto max-w-[1440px] px-5 sm:px-8 mt-12 flex items-center gap-6">
+    <span class="font-disp text-xs tracking-[.2em] uppercase text-white/40">Field frames</span>
+    <div class="relative flex-1 h-[3px] bg-white/12 rounded-full overflow-hidden"><div id="dragProg" class="absolute inset-y-0 left-0 bg-[#C9F24E] rounded-full" style="width:8%"></div></div>
+    <span id="dragPct" class="font-disp text-xs text-white/50 w-10 text-right">0%</span>
+  </div>
+</section>
+
+<!-- ========== CAROUSEL Nº4 — THE DECK ========== -->
+<section id="deck" class="mx-auto max-w-[1440px] px-5 sm:px-8 py-24 sm:py-32">
+  <div class="grid lg:grid-cols-12 gap-12 items-center">
+    <div class="lg:col-span-5 rv">
+      <div class="font-disp text-xs font-bold tracking-[.25em] uppercase text-[#76786B]">Carousel Nº4 — The Deck</div>
+      <h2 class="mt-4 font-disp font-bold uppercase leading-[.95] text-[clamp(2.4rem,5.5vw,4.2rem)]">Shuffle<br>the <span class="serif-it normal-case font-normal">deck.</span></h2>
+      <p class="mt-6 text-[#55584C] leading-relaxed max-w-md">Six services, one deck of cards. Draw the top card to send it to the back, shuffle when you want a new order of priorities. Priorities change — your toolkit shouldn't be hard to re-deal.</p>
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <button id="deckNext" data-hover class="mag inline-flex items-center gap-2.5 rounded-full bg-[#12130E] text-[#EAE6DC] font-disp font-semibold text-sm px-7 h-[52px]">
+          Draw next card
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C9F24E" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </button>
+        <button id="deckShuffle" data-hover class="inline-flex items-center gap-2.5 rounded-full border-[1.5px] border-[#12130E] font-disp font-semibold text-sm px-7 h-[52px] hover:bg-[#12130E] hover:text-[#C9F24E] transition">
+          Shuffle
+        </button>
+      </div>
+      <div class="mt-8 font-disp text-sm text-[#76786B]">Top card: <span id="deckTopName" class="text-[#12130E] font-bold">Business Planning</span> · <span id="deckCount">6 in deck</span></div>
+    </div>
+
+    <div class="lg:col-span-7 rv">
+      <div id="deckStage" class="relative h-[540px] sm:h-[560px]" data-hover></div>
+      <p class="text-center font-disp text-[11px] tracking-[.22em] uppercase text-[#76786B] mt-2">Drag the top card sideways to toss it</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS BAND ================= -->
+<section class="border-y-2 border-[#12130E]">
+  <div class="mx-auto max-w-[1440px] grid grid-cols-2 lg:grid-cols-4" id="statBand"></div>
+</section>
+
+<!-- ========== CAROUSEL Nº5 — VOICES ========== -->
+<section id="voices" class="mx-auto max-w-[1440px] px-5 sm:px-8 py-24 sm:py-32">
+  <div class="flex flex-wrap items-end justify-between gap-6 rv">
+    <div>
+      <div class="font-disp text-xs font-bold tracking-[.25em] uppercase text-[#76786B]">Carousel Nº5 — Voices</div>
+      <h2 class="mt-4 font-disp font-bold uppercase leading-[.95] text-[clamp(2.4rem,6vw,4.6rem)]">Word of <span class="serif-it normal-case font-normal">mouth.</span></h2>
+    </div>
+    <div class="flex gap-2.5" id="voiceNums"></div>
+  </div>
+
+  <div class="relative mt-12 border-2 border-[#12130E] bg-[#F4F1E8] rv">
+    <div class="relative h-[380px] sm:h-[340px]" id="voiceStage"></div>
+    <div class="border-t-2 border-[#12130E] flex items-center justify-between px-6 sm:px-8 py-4">
+      <span class="font-disp text-[11px] font-bold tracking-[.22em] uppercase text-[#76786B]">Client testimonials — unedited</span>
+      <div class="flex gap-2.5">
+        <button id="voicePrev" class="btn-arrow" data-hover style="width:46px;height:46px" aria-label="Previous"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+        <button id="voiceNext" class="btn-arrow" data-hover style="width:46px;height:46px" aria-label="Next"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="bg-[#C9F24E] border-y-2 border-[#12130E]">
+  <div class="mx-auto max-w-[1440px] px-5 sm:px-8 py-20 sm:py-24">
+    <div class="font-disp text-xs font-bold tracking-[.25em] uppercase rv">No forms with fourteen fields</div>
+    <a href="mailto:info@consultio.com" data-hover class="rv block mt-5 font-disp font-bold uppercase leading-[.95] text-[clamp(2.6rem,8.5vw,7rem)] hover:tracking-wide transition-all duration-500">Let's talk <span class="serif-it normal-case font-normal">growth</span> ↗</a>
+
+    <div class="mt-14 grid lg:grid-cols-12 gap-10">
+      <form id="talkForm" class="lg:col-span-7 rv">
+        <label class="font-disp text-[11px] font-bold tracking-[.22em] uppercase">Your work email</label>
+        <div class="mt-3 flex flex-col sm:flex-row gap-4">
+          <input required type="email" placeholder="you@company.com" class="flex-1 h-[60px] bg-transparent border-b-2 border-[#12130E] font-disp text-lg placeholder-[#12130E]/40 focus:border-white transition">
+          <button class="mag h-[60px] px-8 rounded-full bg-[#12130E] text-[#EAE6DC] font-disp font-semibold hover:bg-[#1B1D15] transition shrink-0">Request callback</button>
+        </div>
+        <p id="talkNote" class="mt-3 text-sm text-[#12130E]/60">We reply within one business day. Sat – Thu, 8am – 5pm.</p>
+      </form>
+      <div class="lg:col-span-5 grid sm:grid-cols-3 gap-6 font-disp rv">
+        <div><div class="text-[11px] font-bold tracking-[.22em] uppercase text-[#12130E]/50">Call us</div><div class="mt-2 font-semibold">(210) 123-451</div><div class="text-sm text-[#12130E]/60">Sat – Thursday</div></div>
+        <div><div class="text-[11px] font-bold tracking-[.22em] uppercase text-[#12130E]/50">Mail us</div><div class="mt-2 font-semibold break-all">info@consultio.com</div><div class="text-sm text-[#12130E]/60">For help &amp; enquiries</div></div>
+        <div><div class="text-[11px] font-bold tracking-[.22em] uppercase text-[#12130E]/50">Studio</div><div class="mt-2 font-semibold">380 St Kilda Road</div><div class="text-sm text-[#12130E]/60">Melbourne, Australia</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-[#12130E] text-[#EAE6DC] overflow-hidden">
+  <div class="mx-auto max-w-[1440px] px-5 sm:px-8 pt-20">
+    <div class="grid lg:grid-cols-12 gap-12 pb-16">
+      <div class="lg:col-span-4">
+        <div class="flex items-center gap-3">
+          <span class="grid place-items-center w-10 h-10 rounded-full bg-[#C9F24E] text-[#12130E] font-disp font-bold text-lg">C</span>
+          <span class="font-disp font-bold text-[19px]">CONSULTIO<sup class="text-[10px]">®</sup></span>
+        </div>
+        <ul class="mt-8 space-y-4 text-[15px] text-white/55">
+          <li>30 Commercial Road,<br>Fratton, Australia</li>
+          <li>+888 452 1505</li>
+          <li><span class="text-[#C9F24E] font-disp text-xs font-bold tracking-[.2em] uppercase block mb-1">Open hours</span>Mon – Sat · 8 am – 5 pm<br>Sunday · CLOSED</li>
+        </ul>
+      </div>
+      <div class="lg:col-span-2">
+        <h4 class="font-disp text-xs font-bold tracking-[.25em] uppercase text-white/40">Links</h4>
+        <ul class="mt-6 space-y-3.5 text-[15px]">
+          <li><a href="#top" class="link-line">Home</a></li>
+          <li><a href="#index" class="link-line">Services</a></li>
+          <li><a href="#gallery" class="link-line">About us</a></li>
+          <li><a href="#voices" class="link-line">Testimonials</a></li>
+          <li><a href="#contact" class="link-line">News</a></li>
+        </ul>
+      </div>
+      <div class="lg:col-span-2">
+        <h4 class="font-disp text-xs font-bold tracking-[.25em] uppercase text-white/40">Explore</h4>
+        <ul class="mt-6 space-y-3.5 text-[15px]">
+          <li><a href="#index" class="link-line">The Index</a></li>
+          <li><a href="#gallery" class="link-line">Filmstrip</a></li>
+          <li><a href="#deck" class="link-line">The Deck</a></li>
+          <li><a href="#voices" class="link-line">Voices</a></li>
+          <li><a href="#contact" class="link-line">Team</a></li>
+        </ul>
+      </div>
+      <div class="lg:col-span-4">
+        <h4 class="font-disp text-xs font-bold tracking-[.25em] uppercase text-white/40">Newsletter</h4>
+        <p class="mt-6 text-[15px] text-white/55">Send us a newsletter to get update — one sharp email a month.</p>
+        <form class="mt-5 flex rounded-full border border-white/20 p-1.5 focus-within:border-[#C9F24E] transition" onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('button').textContent='✓';">
+          <input type="email" required placeholder="Your mail address" class="flex-1 bg-transparent px-4 text-sm placeholder-white/35">
+          <button class="h-11 px-6 rounded-full bg-[#C9F24E] text-[#12130E] font-disp font-bold text-sm shrink-0">Join</button>
+        </form>
+        <div class="mt-7 flex gap-6 font-disp text-sm font-semibold">
+          <a href="#" class="link-line">Facebook</a><a href="#" class="link-line">Twitter</a><a href="#" class="link-line">LinkedIn</a><a href="#" class="link-line">Instagram</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="font-disp font-bold uppercase text-center leading-none outline-word text-[clamp(4rem,14.5vw,13rem)] select-none -mb-[.18em]">Consultio</div>
+  <div class="border-t border-white/10">
+    <div class="mx-auto max-w-[1440px] px-5 sm:px-8 py-6 flex flex-col sm:flex-row gap-3 items-center justify-between text-sm text-white/40">
+      <p>2026 © All rights reserved by <span class="text-[#C9F24E] font-semibold">CaseThemes</span></p>
+      <p class="font-disp text-xs tracking-[.18em] uppercase">Five carousels · Zero libraries · All hand-built</p>
+    </div>
+  </div>
+</footer>
+
+<a href="#top" id="toTop" data-hover class="fixed bottom-6 right-6 z-[85] grid place-items-center w-13 h-13 rounded-full bg-[#12130E] text-[#C9F24E] border border-white/20 opacity-0 pointer-events-none transition-all duration-500 translate-y-3" style="width:52px;height:52px">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
+</a>
+
+<script>
+/* ==================== DATA (details from the brief) ==================== */
+const SERVICES = [
+  { n:'01', title:'Business Planning', tag:'Growth',
+    text:"We develop the relationships that underpin the next phase in your organisation's growth. We do this by discerning the people.",
+    chips:['Stakeholder mapping','Operating rhythm','Board reporting'],
+    img:'https://images.pexels.com/photos/20752572/pexels-photo-20752572.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=1400' },
+  { n:'02', title:'Program Management', tag:'Delivery',
+    text:"The development of your next business plan will be executed by a brilliant team who will indicate your grand success.",
+    chips:['Portfolio governance','Sprint cadence','Risk radar'],
+    img:'https://images.pexels.com/photos/9909085/pexels-photo-9909085.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=1400' },
+  { n:'03', title:'Strategy', tag:'Advisory',
+    text:"What separates our agency from all others is the ability to offer the most user-friendly experience, from first workshop to final board pack.",
+    chips:['Positioning','Pricing','Go-to-market'],
+    img:'https://images.pexels.com/photos/19969237/pexels-photo-19969237.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=1400' },
+  { n:'04', title:'Investment Idea', tag:'Capital',
+    text:"Our Investment Idea services provide clients with tailored, data-driven strategies and insights that survive contact with real markets.",
+    chips:['Thesis building','Diligence','Portfolio design'],
+    img:'https://images.pexels.com/photos/7698796/pexels-photo-7698796.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=1400' },
+  { n:'05', title:'SEO Optimization', tag:'Digital',
+    text:"A blueprint for accomplishing your objectives, from thought to search result — technical foundations plus a content engine that compounds.",
+    chips:['Technical SEO','Topical authority','Content engine'],
+    img:'https://images.pexels.com/photos/8901345/pexels-photo-8901345.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=1400' },
+  { n:'06', title:'Market Research', tag:'Insight',
+    text:"Know the terrain before you move. Demand, competitors and white-space, quantified into one decision-grade view of your market.",
+    chips:['Demand sizing','Competitor maps','Signal tracking'],
+    img:'https://images.pexels.com/photos/33181612/pexels-photo-33181612.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=1400' }
+];
+
+const FRAMES = [
+  { t:'Boardrooms, Melbourne', img:SERVICES[0].img },
+  { t:'Studio sessions', img:SERVICES[1].img },
+  { t:'Looking up — Strategy', img:SERVICES[2].img },
+  { t:'The numbers room', img:SERVICES[3].img },
+  { t:'Sketch before scale', img:SERVICES[4].img },
+  { t:'City as data', img:SERVICES[5].img },
+  { t:'Frankfurt offsite', img:'https://images.pexels.com/photos/39802694/pexels-photo-39802694.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=760' },
+  { t:'Workshop walls', img:'https://images.pexels.com/photos/9909066/pexels-photo-9909066.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1000&w=760' }
+];
+
+const VOICES = [
+  { q:'They rebuilt our operating model in eleven weeks. Revenue per consultant is up 38%, and the board finally reads one dashboard.', n:'Amelia Hartley', r:'COO — Northbridge Capital', img:'https://images.pexels.com/photos/6814524/pexels-photo-6814524.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=160&w=160' },
+  { q:'Ruthless clarity on go-to-market. We killed two products, tripled the third, and stopped arguing about the other nine.', n:'Daniel Okafor', r:'Founder — Vertex Labs', img:'https://images.pexels.com/photos/8101922/pexels-photo-8101922.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=160&w=160' },
+  { q:'Program governance that actually works on the ground. Delivery slippage went from 31% to under 4% in two quarters.', n:'Sofia Marchetti', r:'VP Delivery — Arclight', img:'https://images.pexels.com/photos/13801510/pexels-photo-13801510.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=160&w=160' }
+];
+
+/* ==================== PRELOADER ==================== */
+(() => {
+  const pct = document.getElementById('loadPct'), bar = document.getElementById('loadBar'), loader = document.getElementById('loader');
+  let p = 0;
+  const iv = setInterval(() => {
+    p = Math.min(100, p + Math.random() * 16 + 6);
+    pct.textContent = Math.round(p) + '%'; bar.style.width = p + '%';
+    if (p >= 100) { clearInterval(iv); setTimeout(() => { loader.classList.add('done'); document.body.classList.add('loaded'); setTimeout(() => loader.remove(), 1000); }, 250); }
+  }, 90);
+})();
+
+/* ==================== MARQUEE ==================== */
+document.getElementById('mq1').innerHTML = [...Array(2)].map(() =>
+  SERVICES.map(s => `<span class="mx-6 whitespace-nowrap">${s.title} <span class="text-[#C9F24E]">✦</span></span>`).join('')
+).join('');
+
+/* ==================== CAROUSEL Nº1 — HERO ==================== */
+(() => {
+  const DUR = 5400;
+  const wrap = document.getElementById('heroCarousel');
+  const imgsBox = document.getElementById('heroImgs');
+  const segsBox = document.getElementById('heroSegs');
+  imgsBox.innerHTML = SERVICES.map((s, i) => `<img class="hero-img ${i === 0 ? 'on' : ''}" src="${s.img}" alt="${s.title}">`).join('');
+  segsBox.innerHTML = SERVICES.map((_, i) => `<button class="seg" data-seg="${i}" aria-label="Slide ${i + 1}"><i></i></button>`).join('');
+
+  const el = id => document.getElementById(id);
+  let i = 0, start = performance.now(), paused = false, raf;
+
+  function render() {
+    const s = SERVICES[i];
+    imgsBox.querySelectorAll('.hero-img').forEach((im, k) => im.classList.toggle('on', k === i));
+    el('heroNum').textContent = s.n;
+    el('heroTitle').textContent = s.title;
+    el('heroDesc').textContent = s.text;
+    el('heroTag').textContent = s.tag;
+    el('heroChips').innerHTML = s.chips.map(c => `<span class="font-disp text-[11px] font-semibold tracking-wide border border-[#12130E]/20 rounded-full px-3 py-1.5 bg-[#EAE6DC]">${c}</span>`).join('');
+    el('heroCaption').textContent = `${s.title} — ${s.tag} practice`;
+    el('heroCur').textContent = s.n;
+    el('heroGhost').textContent = s.n;
+    el('heroText').classList.remove('rise'); void el('heroText').offsetWidth; el('heroText').classList.add('rise');
+    segsBox.querySelectorAll('.seg').forEach((sg, k) => { sg.classList.toggle('done', k < i); sg.querySelector('i').style.width = k < i ? '100%' : '0%'; });
+  }
+  function go(n) { i = (n + SERVICES.length) % SERVICES.length; start = performance.now(); render(); }
+  function tick(now) {
+    raf = requestAnimationFrame(tick);
+    if (paused || document.hidden) { start = now - (tick._e || 0); return; }
+    tick._e = now - start;
+    const p = Math.min(1, tick._e / DUR);
+    const cur = segsBox.querySelectorAll('.seg')[i];
+    if (cur) cur.querySelector('i').style.width = (p * 100) + '%';
+    if (p >= 1) go(i + 1);
+  }
+  el('heroNext').onclick = () => go(i + 1);
+  el('heroPrev').onclick = () => go(i - 1);
+  segsBox.addEventListener('click', e => { const b = e.target.closest('[data-seg]'); if (b) go(+b.dataset.seg); });
+  const pauseBtn = el('heroPause');
+  function setPaused(v) { paused = v; pauseBtn.textContent = v ? 'Play' : 'Pause'; }
+  pauseBtn.onclick = () => setPaused(!paused);
+  wrap.addEventListener('mouseenter', () => { wrap._h = true; paused = true; });
+  wrap.addEventListener('mouseleave', () => { wrap._h = false; if (pauseBtn.textContent === 'Pause') paused = false; });
+
+  // swipe on media
+  let sx = null, sy = null;
+  const media = el('heroMedia');
+  media.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; });
+  window.addEventListener('pointerup', e => {
+    if (sx === null) return;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(i + (dx < 0 ? 1 : -1));
+    sx = null;
+  });
+  window.addEventListener('keydown', e => {
+    if (/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') go(i + 1);
+    if (e.key === 'ArrowLeft') go(i - 1);
+  });
+  render(); raf = requestAnimationFrame(tick);
+})();
+
+/* ==================== CAROUSEL Nº2 — THE INDEX ==================== */
+(() => {
+  const list = document.getElementById('indexList');
+  list.innerHTML = SERVICES.map((s, i) => `
+    <div class="idx-row border-b border-[#12130E]/15 px-5 sm:px-7 py-6 sm:py-7 ${i === 0 ? 'active' : ''}" data-idx="${i}">
+      <div class="flex items-center gap-5 sm:gap-8">
+        <span class="font-disp font-bold text-sm opacity-50">${s.n}</span>
+        <h3 class="font-disp font-bold uppercase leading-none flex-1 text-[clamp(1.5rem,3.4vw,2.6rem)]">${s.title}</h3>
+        <span class="idx-tag hidden md:inline-block font-disp text-[11px] font-bold tracking-[.2em] uppercase border border-[#12130E]/25 rounded-full px-3.5 py-1.5">${s.tag}</span>
+        <span class="idx-arrow grid place-items-center w-11 h-11 rounded-full border-[1.5px] border-[#12130E]/30 shrink-0">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </span>
+      </div>
+      <div class="idx-desc"><div><p class="pt-4 pl-[52px] sm:pl-[76px] max-w-xl text-[15px] leading-relaxed opacity-70">${s.text}</p></div></div>
+    </div>`).join('');
+
+  const dotsBox = document.getElementById('indexDots');
+  dotsBox.innerHTML = SERVICES.map((_, i) => `<span class="block h-[3px] rounded-full transition-all duration-500 ${i === 0 ? 'w-9 bg-[#C9F24E]' : 'w-4 bg-white/25'}"></span>`).join('');
+
+  const img = document.getElementById('indexImg');
+  let cur = 0, lastUser = 0, fadeT;
+  img.src = SERVICES[0].img;
+  document.getElementById('indexDesc').textContent = SERVICES[0].text;
+
+  function set(n, user) {
+    if (user) lastUser = Date.now();
+    if (n === cur && img.src) { /* still refresh classes */ }
+    cur = (n + SERVICES.length) % SERVICES.length;
+    const s = SERVICES[cur];
+    list.querySelectorAll('.idx-row').forEach((r, k) => r.classList.toggle('active', k === cur));
+    dotsBox.querySelectorAll('span').forEach((d, k) => { d.className = `block h-[3px] rounded-full transition-all duration-500 ${k === cur ? 'w-9 bg-[#C9F24E]' : 'w-4 bg-white/25'}`; });
+    img.classList.add('fading');
+    clearTimeout(fadeT);
+    fadeT = setTimeout(() => {
+      img.src = s.img;
+      document.getElementById('indexTitle').textContent = s.title;
+      document.getElementById('indexTag').textContent = s.tag;
+      document.getElementById('indexDesc').textContent = s.text;
+      document.getElementById('indexGhost').textContent = s.n;
+      img.onload = () => img.classList.remove('fading');
+      setTimeout(() => img.classList.remove('fading'), 350);
+    }, 180);
+  }
+  list.addEventListener('click', e => { const r = e.target.closest('[data-idx]'); if (r) set(+r.dataset.idx, true); });
+  list.addEventListener('mouseover', e => { const r = e.target.closest('[data-idx]'); if (r && +r.dataset.idx !== cur) set(+r.dataset.idx, true); });
+  document.getElementById('indexNext').onclick = () => set(cur + 1, true);
+  document.getElementById('indexPrev').onclick = () => set(cur - 1, true);
+  setInterval(() => { if (Date.now() - lastUser > 7000) set(cur + 1, false); }, 4200);
+  window.__indexSet = set;
+})();
+
+/* ==================== CAROUSEL Nº3 — DRAG FILMSTRIP ==================== */
+(() => {
+  const vp = document.getElementById('dragViewport');
+  const track = document.getElementById('dragTrack');
+  track.innerHTML = FRAMES.map((f, i) => `
+    <article class="gcard shrink-0 w-[270px] sm:w-[320px] ${i % 2 ? 'sm:mt-14' : ''}">
+      <div class="relative h-[380px] sm:h-[440px] overflow-hidden border border-white/15">
+        <img src="${f.img}" alt="${f.t}" draggable="false" class="absolute inset-0 w-full h-[110%] object-cover scale-[1.15]">
+        <span class="absolute top-4 left-4 font-disp text-[11px] font-bold tracking-[.2em] bg-[#12130E]/70 backdrop-blur px-3 py-1.5 rounded-full">FRAME ${String(i + 1).padStart(2, '0')}</span>
+      </div>
+      <div class="mt-4 flex items-center justify-between">
+        <h3 class="font-disp font-semibold">${f.t}</h3>
+        <span class="font-disp text-white/35 text-sm">/ ${String(FRAMES.length).padStart(2, '0')}</span>
+      </div>
+    </article>`).join('');
+
+  let x = 0, vx = 0, dragging = false, startX = 0, startTx = 0, lastX = 0, lastT = 0;
+  const min = () => Math.min(0, -(track.scrollWidth - vp.clientWidth));
+  function loop() {
+    requestAnimationFrame(loop);
+    if (!dragging) {
+      x += vx; vx *= 0.94;
+      if (x > 0) { x += (0 - x) * 0.12; vx = 0; }
+      if (x < min()) { x += (min() - x) * 0.12; vx = 0; }
+    }
+    track.style.transform = `translate3d(${x}px,0,0)`;
+    const p = min() < 0 ? (-x / -min()) : 0;
+    document.getElementById('dragProg').style.width = (8 + p * 92) + '%';
+    document.getElementById('dragPct').textContent = Math.round(p * 100) + '%';
+    // parallax
+    const vc = vp.getBoundingClientRect();
+    track.querySelectorAll('.gcard').forEach(card => {
+      const r = card.getBoundingClientRect();
+      const off = (r.left + r.width / 2 - (vc.left + vc.width / 2)) / vc.width;
+      const im = card.querySelector('img');
+      im.style.transform = `translateX(${(-off * 26).toFixed(1)}px) scale(1.15)`;
+    });
+  }
+  requestAnimationFrame(loop);
+
+  vp.addEventListener('pointerdown', e => {
+    dragging = true; vx = 0; startX = lastX = e.clientX; startTx = x; lastT = performance.now();
+    vp.classList.add('grabbing'); vp.setPointerCapture(e.pointerId);
+  });
+  vp.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const now = performance.now();
+    x = startTx + (e.clientX - startX);
+    vx = (e.clientX - lastX) / Math.max(1, now - lastT) * 16;
+    lastX = e.clientX; lastT = now;
+  });
+  const end = () => { dragging = false; vp.classList.remove('grabbing'); };
+  vp.addEventListener('pointerup', end); vp.addEventListener('pointercancel', end);
+  document.getElementById('dragNext').onclick = () => { vx = -14; };
+  document.getElementById('dragPrev').onclick = () => { vx = 14; };
+})();
+
+/* ==================== CAROUSEL Nº4 — THE DECK ==================== */
+(() => {
+  const stage = document.getElementById('deckStage');
+  let order = SERVICES.map((_, i) => i);
+
+  function render() {
+    stage.innerHTML = order.map((si, pos) => {
+      const s = SERVICES[si];
+      const depth = Math.min(pos, 4);
+      const rot = [-5, 4, -3, 2.5, -1.5][depth] || 0;
+      const hidden = pos > 4 ? 'opacity:0;pointer-events:none;' : '';
+      return `
+      <article class="deck-card" data-pos="${pos}" style="transform:translate(-50%,-50%) translateY(${depth * 12}px) rotate(${rot}deg) scale(${1 - depth * 0.045});z-index:${20 - pos};${hidden}">
+        <div class="bg-[#F4F1E8] border-2 border-[#12130E] shadow-[10px_10px_0_#12130E]">
+          <div class="relative h-[190px] overflow-hidden border-b-2 border-[#12130E]">
+            <img src="${s.img}" alt="${s.title}" draggable="false" class="w-full h-full object-cover">
+            <span class="absolute top-3 left-3 font-disp text-[11px] font-bold tracking-[.18em] uppercase bg-[#C9F24E] border border-[#12130E]/30 px-3 py-1 rounded-full">${s.tag}</span>
+            <span class="absolute bottom-3 right-4 font-disp font-bold text-4xl text-white/80">${s.n}</span>
+          </div>
+          <div class="p-7">
+            <h3 class="font-disp font-bold uppercase text-2xl leading-tight">${s.title}</h3>
+            <p class="mt-3 text-[14.5px] leading-relaxed text-[#55584C]">${s.text}</p>
+            <div class="mt-5 flex flex-wrap gap-2">${s.chips.map(c => `<span class="font-disp text-[10.5px] font-semibold border border-[#12130E]/20 rounded-full px-2.5 py-1">${c}</span>`).join('')}</div>
+          </div>
+        </div>
+      </article>`;
+    }).join('');
+    document.getElementById('deckTopName').textContent = SERVICES[order[0]].title;
+  }
+  function next(dir = 1) {
+    const top = stage.querySelector('[data-pos="0"]');
+    if (!top) return;
+    top.classList.add(dir < 0 ? 'toss-r' : 'toss-l');
+    setTimeout(() => { order.push(order.shift()); render(); }, 340);
+  }
+  function shuffle() {
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    stage.style.transform = 'rotate(-1.2deg)'; setTimeout(() => stage.style.transform = '', 220);
+    render();
+  }
+  document.getElementById('deckNext').onclick = () => next(1);
+  document.getElementById('deckShuffle').onclick = shuffle;
+
+  // drag top card
+  let sx = null, card = null;
+  stage.addEventListener('pointerdown', e => {
+    card = e.target.closest('[data-pos="0"]'); if (!card) return;
+    sx = e.clientX; card.style.transition = 'none';
+  });
+  window.addEventListener('pointermove', e => {
+    if (sx === null || !card) return;
+    const dx = e.clientX - sx;
+    card.style.transform = `translate(calc(-50% + ${dx}px),-50%) rotate(${dx / 14}deg)`;
+  });
+  window.addEventListener('pointerup', e => {
+    if (sx === null || !card) return;
+    const dx = e.clientX - sx;
+    card.style.transition = '';
+    if (Math.abs(dx) > 95) next(dx < 0 ? 1 : -1); else render();
+    sx = null; card = null;
+  });
+  render();
+})();
+
+/* ==================== STATS ==================== */
+document.getElementById('statBand').innerHTML = [
+  { v: 20, suf: '+', l: 'Years of practice' },
+  { v: 640, suf: '+', l: 'Clients moved forward' },
+  { v: 96, suf: '%', l: 'Return for phase two' },
+  { v: 14, suf: '', l: 'Industries covered' }
+].map((s, i) => `
+  <div class="p-8 sm:p-10 ${i % 2 ? 'bg-[#F4F1E8]' : ''} ${i !== 3 ? 'lg:border-r' : ''} border-[#12130E]/15 rv">
+    <div class="font-disp font-bold text-[clamp(2.4rem,4.5vw,3.6rem)] leading-none"><span class="counter" data-to="${s.v}">0</span>${s.suf}</div>
+    <div class="mt-3 font-disp text-[11px] font-bold tracking-[.22em] uppercase text-[#76786B]">${s.l}</div>
+  </div>`).join('');
+
+/* ==================== CAROUSEL Nº5 — VOICES ==================== */
+(() => {
+  const stage = document.getElementById('voiceStage');
+  const nums = document.getElementById('voiceNums');
+  stage.innerHTML = VOICES.map((v, i) => `
+    <div class="voice ${i === 0 ? 'on' : ''} p-8 sm:p-12 flex flex-col justify-between">
+      <div class="text-[#AEE22E] text-2xl tracking-[.3em]">★★★★★</div>
+      <p class="serif-it text-[clamp(1.5rem,3.4vw,2.5rem)] leading-[1.25] max-w-4xl">“${v.q}”</p>
+      <div class="flex items-center gap-4">
+        <img src="${v.img}" alt="${v.n}" class="w-13 h-13 rounded-full object-cover border-2 border-[#12130E]" style="width:52px;height:52px">
+        <div><div class="font-disp font-bold">${v.n}</div><div class="text-sm text-[#76786B]">${v.r}</div></div>
+      </div>
+    </div>`).join('');
+  nums.innerHTML = VOICES.map((_, i) => `<button data-v="${i}" class="font-disp font-bold text-sm w-11 h-11 rounded-full border-[1.5px] transition ${i === 0 ? 'bg-[#12130E] text-[#C9F24E] border-[#12130E]' : 'border-[#12130E]/30'}">${String(i + 1).padStart(2, '0')}</button>`).join('');
+
+  let cur = 0, timer;
+  function set(n) {
+    cur = (n + VOICES.length) % VOICES.length;
+    stage.querySelectorAll('.voice').forEach((v, k) => v.classList.toggle('on', k === cur));
+    nums.querySelectorAll('button').forEach((b, k) => {
+      b.className = `font-disp font-bold text-sm w-11 h-11 rounded-full border-[1.5px] transition ${k === cur ? 'bg-[#12130E] text-[#C9F24E] border-[#12130E]' : 'border-[#12130E]/30'}`;
+    });
+    restart();
+  }
+  function restart() { clearInterval(timer); timer = setInterval(() => set(cur + 1), 6000); }
+  nums.addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (b) set(+b.dataset.v); });
+  document.getElementById('voiceNext').onclick = () => set(cur + 1);
+  document.getElementById('voicePrev').onclick = () => set(cur - 1);
+  restart();
+})();
+
+/* ==================== GLOBAL UI ==================== */
+// clock (Melbourne)
+setInterval(() => {
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('en-AU', { timeZone: 'Australia/Melbourne', hour: '2-digit', minute: '2-digit' });
+}, 1000);
+
+// scroll progress + toTop
+const toTop = document.getElementById('toTop');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  document.getElementById('scrollbarFill').style.width = (scrollY / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  const show = scrollY > 700;
+  toTop.style.opacity = show ? 1 : 0;
+  toTop.style.pointerEvents = show ? 'auto' : 'none';
+  toTop.style.transform = show ? 'none' : 'translateY(12px)';
+}, { passive: true });
+
+// reveal
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .1 });
+document.querySelectorAll('.rv').forEach((el, i) => { el.style.transitionDelay = (i % 3) * 80 + 'ms'; io.observe(el); });
+
+// counters
+const cio = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const el = e.target, to = +el.dataset.to, t0 = performance.now();
+  (function step(now) { const p = Math.min(1, (now - t0) / 1500); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); })(t0);
+  cio.unobserve(el);
+}), { threshold: .5 });
+document.querySelectorAll('.counter').forEach(el => cio.observe(el));
+
+// mobile menu
+const mm = document.getElementById('mobileMenu');
+document.getElementById('menuBtn').onclick = () => { mm.classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
+const closeMM = () => { mm.classList.add('hidden'); document.body.style.overflow = ''; };
+document.getElementById('menuClose').onclick = closeMM;
+mm.querySelectorAll('.menu-link').forEach(a => a.addEventListener('click', closeMM));
+
+// contact form
+document.getElementById('talkForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const n = document.getElementById('talkNote');
+  n.textContent = 'Received. A consultant — a human one — will call you back within one business day.';
+  n.style.color = '#12130E'; n.style.fontWeight = '600';
+  e.target.reset();
+});
+
+// custom cursor + magnetic
+(() => {
+  const dot = document.getElementById('cursorDot'), ring = document.getElementById('cursorRing');
+  let mx = -100, my = -100, rx = -100, ry = -100;
+  window.addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+  (function follow() {
+    requestAnimationFrame(follow);
+    rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
+    dot.style.transform = `translate(${mx - 4}px,${my - 4}px)`;
+    ring.style.transform = `translate(${rx - ring.offsetWidth / 2}px,${ry - ring.offsetHeight / 2}px)`;
+  })();
+  document.addEventListener('mouseover', e => { if (e.target.closest('a,button,[data-hover]')) ring.classList.add('big'); });
+  document.addEventListener('mouseout', e => { if (e.target.closest('a,button,[data-hover]')) ring.classList.remove('big'); });
+
+  document.querySelectorAll('.mag').forEach(el => {
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect();
+      el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px,${(e.clientY - r.top - r.height / 2) * 0.28}px)`;
+    });
+    el.addEventListener('pointerleave', () => el.style.transform = '');
+  });
+})();
+</script>
+</body>
+</html>
