@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Consultio — Capabilities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+:root{
+  --ink:#08170F;        /* deep forest ink */
+  --ink2:#0E2419;
+  --cream:#EFE9DC;
+  --acid:#C8F24B;       /* chartreuse accent */
+  --sage:rgba(239,233,220,.55);
+  --line:rgba(239,233,220,.14);
+  --ease:cubic-bezier(.19,1,.22,1);
+}
+html,body{ background:var(--ink); color:var(--cream); font-family:'Archivo',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+.dsp{ font-family:'Archivo',sans-serif; letter-spacing:-.035em; }
+.ital{ font-family:'Fraunces',serif; font-style:italic; font-weight:400; letter-spacing:-.01em; }
+::selection{ background:var(--acid); color:var(--ink); }
+
+.grain:after{ content:""; position:fixed; inset:0; z-index:90; pointer-events:none; opacity:.055; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.hair{ border:1px solid var(--line); }
+.eyebrow{ font-size:11px; font-weight:700; letter-spacing:.32em; text-transform:uppercase; }
+
+/* ============ ACCORDION ============ */
+#acc{ display:flex; gap:10px; height:min(72vh,620px); min-height:480px; }
+@media (max-width:860px){ #acc{ flex-direction:column; height:auto; } }
+
+.panel{ position:relative; flex:1; min-width:0; border-radius:20px; overflow:hidden; cursor:pointer;
+  transition:flex-grow .95s var(--ease); background:var(--ink2); border:1px solid var(--line); }
+.panel.open{ flex-grow:5.2; }
+@media (max-width:860px){ .panel{ flex:none; height:82px; transition:height .85s var(--ease); } .panel.open{ height:400px; flex-grow:0; } }
+
+.panel img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  filter:grayscale(1) contrast(1.06) brightness(.55); transform:scale(1.16);
+  transition:filter 1s var(--ease), transform 1.4s var(--ease); }
+.panel.open img{ filter:grayscale(0) brightness(.82); transform:scale(1.02); }
+.panel:after{ content:""; position:absolute; inset:0; background:linear-gradient(to top,rgba(8,23,15,.95) 4%,rgba(8,23,15,.35) 46%,rgba(8,23,15,.15) 100%);
+  opacity:.9; transition:opacity .8s; }
+.panel.open:after{ opacity:1; }
+
+/* collapsed: vertical title */
+.vwrap{ position:absolute; left:0; right:0; bottom:0; top:0; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:22px 0; z-index:3;
+  transition:opacity .4s; }
+.panel.open .vwrap{ opacity:0; pointer-events:none; }
+.vnum{ font-size:12px; font-weight:700; letter-spacing:.14em; color:var(--acid); }
+.vtitle{ writing-mode:vertical-rl; transform:rotate(180deg); font-size:15px; font-weight:600; letter-spacing:.02em; white-space:nowrap;
+  text-overflow:ellipsis; overflow:hidden; max-height:100%; }
+@media (max-width:860px){
+  .vwrap{ flex-direction:row; justify-content:flex-start; gap:16px; align-items:center; padding:0 20px; }
+  .vtitle{ writing-mode:horizontal-tb; transform:none; }
+}
+
+/* expanded content */
+.body{ position:absolute; inset:auto 0 0 0; padding:30px; z-index:4; opacity:0; transform:translateY(22px);
+  transition:opacity .55s .18s, transform .7s .18s var(--ease); pointer-events:none; max-width:620px; }
+.panel.open .body{ opacity:1; transform:none; pointer-events:auto; }
+.body h3{ font-size:clamp(1.9rem,3.4vw,3rem); line-height:.98; }
+.pbar{ height:2px; width:100%; background:rgba(239,233,220,.16); border-radius:99px; overflow:hidden; margin-bottom:20px; }
+.pbar i{ display:block; height:100%; width:0; background:var(--acid); }
+.more{ display:inline-flex; align-items:center; gap:14px; margin-top:26px; font-weight:700; font-size:14px; letter-spacing:.02em; }
+.more .pill{ width:46px; height:46px; border-radius:99px; display:grid; place-items:center; background:var(--acid); color:var(--ink);
+  transition:transform .55s var(--ease), box-shadow .55s; }
+.more:hover .pill{ transform:rotate(-45deg) scale(1.08); box-shadow:0 12px 30px -8px rgba(200,242,75,.5); }
+.more .txt{ position:relative; }
+.more .txt:after{ content:""; position:absolute; left:0; right:0; bottom:-4px; height:1.5px; background:var(--acid); transform:scaleX(0); transform-origin:left; transition:transform .5s var(--ease); }
+.more:hover .txt:after{ transform:scaleX(1); }
+
+/* top-right corner tag on open */
+.chip{ position:absolute; top:26px; left:30px; z-index:4; display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(-10px);
+  transition:.5s .25s var(--ease); }
+.panel.open .chip{ opacity:1; transform:none; }
+.chip .k{ padding:7px 13px; border-radius:99px; background:rgba(239,233,220,.12); backdrop-filter:blur(8px); border:1px solid var(--line); font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; }
+
+/* ============ CHROME ============ */
+.rail{ display:flex; gap:10px; }
+.tick{ flex:1; height:3px; border-radius:99px; background:rgba(239,233,220,.16); overflow:hidden; cursor:pointer; position:relative; }
+.tick i{ position:absolute; inset:0 auto 0 0; width:0; background:var(--acid); }
+.tick.done i{ width:100%; }
+.tick:hover{ background:rgba(239,233,220,.35); }
+
+.arrow{ width:56px; height:56px; border-radius:99px; display:grid; place-items:center; border:1px solid var(--line); transition:.4s var(--ease); position:relative; overflow:hidden; }
+.arrow:before{ content:""; position:absolute; inset:0; background:var(--acid); transform:translateY(101%); transition:transform .5s var(--ease); }
+.arrow:hover:before{ transform:none; }
+.arrow:hover{ color:var(--ink); border-color:var(--acid); }
+.arrow svg{ position:relative; }
+
+[data-rv]{ opacity:0; transform:translateY(26px); }
+[data-rv].in{ opacity:1; transform:none; transition:opacity .95s var(--ease), transform .95s var(--ease); }
+
+/* cursor */
+#c{ position:fixed; top:0; left:0; z-index:200; pointer-events:none; width:70px; height:70px; border-radius:99px;
+  display:grid; place-items:center; background:var(--acid); color:var(--ink); font-size:10px; font-weight:800; letter-spacing:.18em;
+  transform:translate(-50%,-50%) scale(0); transition:transform .4s var(--ease); mix-blend-mode:normal; }
+#c.on{ transform:translate(-50%,-50%) scale(1); }
+@media (pointer:coarse){ #c{ display:none } }
+@media (pointer:fine){ body,a,button{ cursor:none } }
+@media (prefers-reduced-motion:reduce){ *{ transition:none!important; animation:none!important } }
+</style>
+</head>
+<body class="grain">
+
+<div id="c">OPEN</div>
+
+<section class="relative py-20 sm:py-28 overflow-hidden">
+  <div class="pointer-events-none absolute -top-40 left-1/3 w-[620px] h-[620px] rounded-full blur-[140px] opacity-25" style="background:#C8F24B"></div>
+
+  <div class="relative mx-auto max-w-[1500px] px-5 sm:px-8">
+
+    <!-- ===== header ===== -->
+    <div class="flex flex-wrap items-end justify-between gap-10 mb-12" data-rv>
+      <div class="max-w-2xl">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="w-2 h-2 rounded-full" style="background:var(--acid)"></span>
+          <span class="eyebrow" style="color:var(--acid)">Capabilities — 2026</span>
+        </div>
+        <h2 class="dsp font-extrabold leading-[.9] text-[clamp(2.6rem,6.4vw,5.4rem)]">
+          Six ways we<br>make it <span class="ital font-normal" style="color:var(--acid)">happen.</span>
+        </h2>
+      </div>
+      <div class="flex items-center gap-5">
+        <div class="hidden sm:block max-w-[300px] text-[15px] leading-relaxed" style="color:var(--sage)">
+          Hover or tap a panel to open it. The gallery advances on its own — pause it by pointing.
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="arrow" id="prev" aria-label="Previous capability">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          </button>
+          <button class="arrow" id="next" aria-label="Next capability">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== counter row ===== -->
+    <div class="flex items-end justify-between mb-5" data-rv>
+      <div class="dsp font-extrabold leading-none tabular-nums text-[clamp(2.6rem,7vw,4.6rem)]" style="line-height:.8">
+        <span id="cur">01</span><span class="opacity-25" style="font-size:.42em; letter-spacing:0"> / 06</span>
+      </div>
+      <div class="text-right">
+        <div class="eyebrow" style="color:var(--sage)">Now showing</div>
+        <div id="nowTitle" class="dsp font-bold text-[19px] mt-1 transition-all duration-500"></div>
+      </div>
+    </div>
+
+    <!-- ===== the accordion ===== -->
+    <div id="acc" data-rv></div>
+
+    <!-- ===== progress rail ===== -->
+    <div class="mt-8 flex items-center gap-6" data-rv>
+      <div class="rail flex-1" id="rail"></div>
+      <div class="flex items-center gap-2.5 eyebrow shrink-0" style="color:var(--sage)">
+        <svg width="26" height="12" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 7h22M5 3 1 7l4 4M21 3l4 4-4 4"/></svg>
+        Click panels · ← → keys
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const S = [
+  { t:'Investment Idea',    k:'Capital',
+    d:'Tailored, data-driven investment strategies — thesis development, diligence support and the monitoring layer that protects the return.',
+    m:['Thesis','Diligence','Monitoring'],
+    i:'https://images.pexels.com/photos/7433919/pexels-photo-7433919.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1400&w=900' },
+  { t:'Business Planning',  k:'Growth',
+    d:"We develop the relationships that underpin the next phase in your organisation's growth — mapping stakeholders and turning a long deck into a one-page operating rhythm.",
+    m:['Stakeholder maps','90-day rhythm','Board-ready'],
+    i:'https://images.pexels.com/photos/8124222/pexels-photo-8124222.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1400&w=900' },
+  { t:'Program Management', k:'Delivery',
+    d:'Your next plan executed by a brilliant team at every gate — portfolio governance, sprint cadence and transparent reporting across every tier.',
+    m:['Governance','Sprint cadence','Risk radar'],
+    i:'https://images.pexels.com/photos/7433840/pexels-photo-7433840.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1400&w=900' },
+  { t:'Strategy',           k:'Advisory',
+    d:'Positioning, pricing and go-to-market — the hard trade-offs pressure-tested with data, so the board gets conviction rather than opinions.',
+    m:['Positioning','Pricing','Go-to-market'],
+    i:'https://images.pexels.com/photos/8371735/pexels-photo-8371735.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1400&w=900' },
+  { t:'SEO Optimization',   k:'Digital',
+    d:'A blueprint for accomplishing your objectives: technical foundations, topical authority and a content engine that compounds month after month.',
+    m:['Technical','Authority','Content engine'],
+    i:'https://images.pexels.com/photos/7792771/pexels-photo-7792771.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1400&w=900' },
+  { t:'Market Research',    k:'Insight',
+    d:'Quantify demand, map competitors and size the opportunity to a decision-grade confidence — primary interviews, panels and signal scraping.',
+    m:['Interviews','Panels','Sizing'],
+    i:'https://images.pexels.com/photos/7964417/pexels-photo-7964417.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1400&w=900' },
+];
+const pad = n => String(n + 1).padStart(2, '0');
+
+const acc = document.getElementById('acc');
+acc.innerHTML = S.map((s, k) => `
+  <article class="panel" data-i="${k}" role="button" tabindex="0" aria-label="${s.t}">
+    <img src="${s.i}" alt="${s.t}" draggable="false">
+    <div class="vwrap">
+      <span class="vnum">${pad(k)}</span>
+      <span class="vtitle">${s.t}</span>
+      <span class="vnum opacity-40">✦</span>
+    </div>
+    <div class="chip"><span class="k">${s.k}</span><span class="eyebrow" style="color:var(--acid)">${pad(k)} / 06</span></div>
+    <div class="body">
+      <div class="pbar"><i></i></div>
+      <h3 class="dsp font-extrabold">${s.t}</h3>
+      <p class="mt-4 text-[15.5px] leading-relaxed" style="color:var(--sage)">${s.d}</p>
+      <div class="mt-6 flex flex-wrap gap-2">${s.m.map(x => `<span class="text-[11.5px] font-bold tracking-[.16em] uppercase px-3.5 py-2 rounded-full hair">${x}</span>`).join('')}</div>
+      <a href="#" class="more"><span class="txt">Read more</span>
+        <span class="pill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+      </a>
+    </div>
+  </article>`).join('');
+
+const panels = [...acc.children];
+const rail = document.getElementById('rail');
+rail.innerHTML = S.map((_, k) => `<button class="tick" data-t="${k}" aria-label="Open ${S[k].t}"><i></i></button>`).join('');
+const ticks = [...rail.children];
+
+let idx = 0, t0 = performance.now(), el = 0, hold = false, jumping = false;
+const AUTO = 5600;
+
+function open(k, manual) {
+  idx = ((k % S.length) + S.length) % S.length;
+  panels.forEach((p, i) => p.classList.toggle('open', i === idx));
+  ticks.forEach((t, i) => { t.classList.toggle('done', i < idx); });
+  const nowTitle = document.getElementById('nowTitle');
+  nowTitle.style.opacity = '0'; nowTitle.style.transform = 'translateY(8px)';
+  setTimeout(() => {
+    nowTitle.textContent = S[idx].t;
+    nowTitle.style.transition = 'opacity .45s, transform .55s cubic-bezier(.19,1,.22,1)';
+    nowTitle.style.opacity = '1'; nowTitle.style.transform = 'none';
+  }, 180);
+  document.getElementById('cur').textContent = pad(idx);
+  panels.forEach((p, i) => p.querySelector('.pbar i').style.width = i === idx ? '0%' : '0%');
+  t0 = performance.now(); el = 0;
+  if (manual) { jumping = true; setTimeout(() => jumping = false, 400); }
+}
+document.getElementById('next').onclick = () => open(idx + 1, true);
+document.getElementById('prev').onclick = () => open(idx - 1, true);
+ticks.forEach(t => t.onclick = () => open(+t.dataset.t, true));
+panels.forEach(p => {
+  p.addEventListener('click', e => { if (e.target.closest('a')) return; open(+p.dataset.i, true); });
+  p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(+p.dataset.i, true); } });
+  p.addEventListener('mouseenter', () => open(+p.dataset.i, true));
+});
+addEventListener('keydown', e => {
+  const r = acc.getBoundingClientRect();
+  if (r.top > innerHeight || r.bottom < 0) return;
+  if (e.key === 'ArrowRight') open(idx + 1, true);
+  if (e.key === 'ArrowLeft') open(idx - 1, true);
+});
+acc.addEventListener('mouseenter', () => hold = true);
+acc.addEventListener('mouseleave', () => hold = false);
+
+/* autoplay with per-panel progress */
+(function loop(now) {
+  requestAnimationFrame(loop);
+  const bar = panels[idx]?.querySelector('.pbar i');
+  const fill = ticks[idx]?.querySelector('i');
+  if (hold || document.hidden || jumping) { t0 = now - el; return; }
+  el = now - t0;
+  const p = Math.min(1, el / AUTO);
+  if (bar) bar.style.width = p * 100 + '%';
+  if (fill) fill.style.width = p * 100 + '%';
+  if (p >= 1) open(idx + 1);
+})(performance.now());
+
+open(0);
+
+/* cursor */
+(() => {
+  if (matchMedia('(pointer:coarse)').matches) return;
+  const c = document.getElementById('c');
+  let x = -100, y = -100, tx = -100, ty = -100;
+  addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+  (function f() { x += (tx - x) * .18; y += (ty - y) * .18; c.style.left = x + 'px'; c.style.top = y + 'px'; requestAnimationFrame(f); })();
+  acc.addEventListener('mouseenter', () => c.classList.add('on'));
+  acc.addEventListener('mouseleave', () => c.classList.remove('on'));
+})();
+
+/* reveal */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .1 });
+document.querySelectorAll('[data-rv]').forEach((el, i) => { el.style.transitionDelay = i * 110 + 'ms'; io.observe(el); });
+</script>
+</body>
+</html>
